@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBOARD</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================================== */
+        /* GLOBALE STILE UND RESPONSIVES DESIGN                      */
+        /* ========================================================== */
+        
+        /* CSS-Variablen für die Designs */
+        :root {
+            /* Dunkler Modus (Standard) */
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --text-color: #f0f0f0;
+            --dark-bg: #1a1a2e;
+            --glow-color: #ff9900;
+            --accent-color: var(--glow-color);
+            --color-ok: #39ff14;
+            --color-warning: #ffcc00;
+            --color-critical: #ff0055;
+            --color-info: #0099ff;
+        }
+        /* Heller Modus */
+        body.light-mode {
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            --text-color: #333;
+            --dark-bg: #e0e0e0;
+            --glow-color: #007bff;
+            --accent-color: var(--glow-color);
+            --color-ok: #28a745;
+            --color-warning: #ffc107;
+            --color-critical: #dc3545;
+            --color-info: #17a2b8;
+        }
+        /* Grüner Akzent-Modus */
+        body.green-accent-mode {
+            --glow-color: #39ff14;
+            --accent-color: var(--glow-color);
+        }
+        /* Blauer Neon-Modus */
+        body.blue-neon-mode {
+            --glass-bg: rgba(100, 150, 255, 0.1);
+            --glass-border: rgba(100, 150, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --text-color: #e0f2ff;
+            --dark-bg: #000033; /* Dunkelblauer Hintergrund */
+            --glow-color: #00ffff; /* Zyan-Blau für Leuchteffekte */
+            --accent-color: var(--glow-color);
+        }
+        /* Solarized-Modus (Hell) */
+        body.solarized-light-mode {
+            --glass-bg: rgba(253, 246, 227, 0.5);
+            --glass-border: rgba(253, 246, 227, 0.8);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            --text-color: #586e75;
+            --dark-bg: #fdf6e3;
+            --glow-color: #cb4b16; /* Dunkles Orange */
+            --accent-color: var(--glow-color);
+        }
+
+        /* Globale Stile für den Body */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease;
+        }
+        
+        /* Überschrift, die sich automatisch an die Bildschirmbreite anpasst */
+        .header {
+            text-align: center;
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            /* clamp() sorgt für eine responsive Schriftgröße */
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        /* ========================================================== */
+        /* BURGER-MENÜ                                              */
+        /* ========================================================== */
+        .burger-menu-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        .burger-menu-icon {
+            width: 30px;
+            height: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .burger-menu-icon span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 5px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .burger-menu-icon.open span:nth-child(1) {
+            transform: translateY(11px) rotate(45deg);
+        }
+        .burger-menu-icon.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .burger-menu-icon.open span:nth-child(3) {
+            transform: translateY(-11px) rotate(-45deg);
+        }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            z-index: 999;
+        }
+        .menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .menu-content {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            text-align: center;
+        }
+        .menu-content h2 {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+        }
+        .menu-option {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background: var(--glass-bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+            border: 1px solid var(--glass-border);
+        }
+        .menu-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: var(--glass-shadow);
+        }
+        .menu-option.active {
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+        
+        /* ========================================================== */
+        /* KACHEL-RASTER UND ANDERE ELEMENTE                        */
+        /* ========================================================== */
+        .grid-container {
+            /* Responsives Raster: 2 Spalten für mobile Geräte */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 0;
+        }
+        /* Media Query für Tablets und größere Geräte */
+        @media (min-width: 768px) {
+            .grid-container {
+                /* 6 Spalten auf breiteren Bildschirmen */
+                grid-template-columns: repeat(6, 1fr);
+                gap: 20px;
+            }
+        }
+        /* Media Query für sehr große Desktops */
+        @media (min-width: 1024px) {
+            .grid-container {
+                max-width: 900px;
+            }
+        }
+        .tile {
+            position: relative;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--glass-shadow);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .tile:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 15px var(--accent-color), 0 0 25px var(--accent-color);
+        }
+        .tile .icon {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        .tile .text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            font-weight: 400;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .search-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .search-box {
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--glass-shadow);
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        .search-input::placeholder {
+            color: rgba(240, 240, 240, 0.7);
+        }
+        .search-button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            background: var(--accent-color);
+            color: var(--dark-bg);
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+        .search-button:hover {
+            background: #ffcc66;
+            filter: brightness(1.2);
+        }
+        body.green-accent-mode .search-button:hover,
+        body.blue-neon-mode .search-button:hover,
+        body.solarized-light-mode .search-button:hover {
+            filter: brightness(1.2);
+        }
+        
+        .nixie-clock {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color);
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            line-height: 1.2;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .nixie-clock .date {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        /* Responsive 3D-Animation */
+        .tech-animation-container {
+            /* clamp() stellt sicher, dass die Größe responsive ist, aber kontrolliert bleibt */
+            width: clamp(100px, 20vw, 200px);
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: -15px;
+        }
+        .tech-animation-container:hover {
+            transform: scale(1.05);
+        }
+
+        /* Container für die neue Formänderungsbox */
+        .change-shape-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            /* Feste Größe für eine zuverlässige Berührungszone */
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--glass-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            padding: 5px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        .change-shape-container:hover {
+            transform: scale(1.1);
+        }
+
+        .change-shape-container .icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .change-shape-container .text {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Burger-Menü-Icon -->
+    <div class="burger-menu-container">
+        <div class="burger-menu-icon" id="burger-menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <!-- Menü-Overlay -->
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="menu-content">
+            <h2>Design wählen</h2>
+            <a href="#" class="menu-option" data-theme="dark-mode">Dunkler Modus</a>
+            <a href="#" class="menu-option" data-theme="light-mode">Heller Modus</a>
+            <a href="#" class="menu-option" data-theme="green-accent-mode">Grün-Akzent</a>
+            <a href="#" class="menu-option" data-theme="blue-neon-mode">Blau-Neon</a>
+            <a href="#" class="menu-option" data-theme="solarized-light-mode">Solarisiert</a>
+        </div>
+    </div>
+
+    <!-- Technische Animation -->
+    <div class="tech-animation-container" id="tech-animation-container">
+        <canvas id="animation-canvas"></canvas>
+    </div>
+
+    <!-- Hauptüberschrift (jetzt wieder dynamisch) -->
+    <header class="header">
+        <h1 id="greeting-title"></h1>
+    </header>
+
+    <!-- Kacheln -->
+    <main class="grid-container">
+        <a href="https://www.icloud.com/mail/" target="_blank" class="tile">
+            <div class="icon">📧</div>
+            <div class="text">ICLOUD MAIL</div>
+        </a>
+        <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="tile">
+            <div class="icon">📨</div>
+            <div class="text">GMAIL</div>
+        </a>
+        <a href="https://eckdde.sharepoint.com/sites/Startseite-Intranet" target="_blank" class="tile">
+            <div class="icon">🏢</div>
+            <div class="text">INTRANET</div>
+        </a>
+        <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile">
+            <div class="icon">📖</div>
+            <div class="text">WIKI</div>
+        </a>
+        <a href="https://login.hrworks.de/?companyId=eckd&directssologin=true" target="_blank" class="tile">
+            <div class="icon">👔</div>
+            <div class="text">HRWORKS</div>
+        </a>
+        <a href="https://apps.churchx.de/itm-kiris-eckd-prod" target="_blank" class="tile">
+            <div class="icon">⛪</div>
+            <div class="text">KIRIS</div>
+        </a>
+        <a href="https://chat.openai.com/" target="_blank" class="tile">
+            <div class="icon">🤖</div>
+            <div class="text">CHATGPT</div>
+        </a>
+        <a href="https://gemini.google.com/?hl=de" target="_blank" class="tile">
+            <div class="icon">✨</div>
+            <div class="text">GEMINI</div>
+        </a>
+        <a href="https://m365.cloud.microsoft:443/chat/?titleId=T_82714181-8fcd-715b-fe7b-98ba417f56d0&source=embedded-builder" target="_blank" class="tile">
+            <div class="icon">💼</div>
+            <div class="text">COPILOT</div>
+        </a>
+        <a href="https://news.google.com/" target="_blank" class="tile">
+            <div class="icon">📰</div>
+            <div class="text">GOOGLE NEWS</div>
+        </a>
+        <a href="https://ekkw.cloud.com" target="_blank" class="tile">
+            <div class="icon">☁️</div>
+            <div class="text">EKKW-CLOUD</div>
+        </a>
+        <a href="https://www.bild.de/" target="_blank" class="tile">
+            <div class="icon">📰</div>
+            <div class="text">BILD</div>
+        </a>
+    </main>
+
+    <!-- Suchfeld -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="search-input" class="search-input" placeholder="In Google suchen">
+            <button id="search-button" class="search-button">Suchen</button>
+        </div>
+    </div>
+
+    <!-- Uhr -->
+    <div class="nixie-clock" id="nixie-clock">
+        <div id="time"></div>
+        <div class="date" id="date"></div>
+    </div>
+
+    <!-- Container für die neue Formänderungsbox -->
+    <a href="#" id="change-shape-tile" class="change-shape-container">
+        <div class="icon">🔄</div>
+        <div class="text">ANIMATION ÄNDERN</div>
+    </a>
+    
+    <!-- Three.js Bibliothek -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // JavaScript für die Funktionalität
+        
+        // 1. Dynamischer Gruß nach Tageszeit
+        function updateGreeting() {
+            const now = new Date();
+            const hour = now.getHours();
+            let dynamicPart;
+
+            if (hour >= 5 && hour < 10) {
+                dynamicPart = 'MORGEN';
+            } else if (hour >= 10 && hour < 19) {
+                dynamicPart = 'TAG';
+            } else {
+                dynamicPart = 'ABEND';
+            }
+
+            document.getElementById('greeting-title').textContent = `HALLO HEIKO, ICH WÜNSCHE DIR EINEN SCHÖNEN ${dynamicPart}`.toUpperCase();
+        }
+
+        // 2. Nixie-Uhr mit Sekunden
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const date = now.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            document.getElementById('time').textContent = time;
+            document.getElementById('date').textContent = date;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock(); // Initialer Aufruf
+        updateGreeting(); // Initialer Aufruf für den Gruß
+
+        // 3. Google-Suche
+        document.getElementById('search-button').addEventListener('click', () => {
+            const input = document.getElementById('search-input');
+            const query = input.value;
+            if (query) {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                input.value = '';
+            }
+        });
+
+        document.getElementById('search-input').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                document.getElementById('search-button').click();
+            }
+        });
+
+        // 4. Design-Umschaltung
+        const burgerIcon = document.getElementById('burger-menu-icon');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuOptions = document.querySelectorAll('.menu-option');
+
+        // Funktion zum Öffnen/Schließen des Menüs
+        function toggleMenu() {
+            burgerIcon.classList.toggle('open');
+            menuOverlay.classList.toggle('open');
+        }
+
+        // Funktion zum Anwenden des Designs
+        function applyTheme(theme) {
+            document.body.classList.remove('dark-mode', 'light-mode', 'green-accent-mode', 'blue-neon-mode', 'solarized-light-mode');
+            if (theme !== 'dark-mode') {
+                document.body.classList.add(theme);
+            }
+            localStorage.setItem('theme', theme);
+            
+            // Die Farbe der 3D-Animation aktualisieren, wenn das Design geändert wird
+            updateAnimationColor();
+
+            // Aktiven Menüpunkt markieren
+            menuOptions.forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.theme === theme) {
+                    option.classList.add('active');
+                }
+            });
+        }
+
+        // Menü-Logik
+        burgerIcon.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', (e) => {
+            if (e.target.classList.contains('menu-overlay')) {
+                toggleMenu();
+            }
+        });
+
+        // Klicks auf Design-Optionen
+        menuOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const selectedTheme = e.target.dataset.theme;
+                applyTheme(selectedTheme);
+                toggleMenu(); // Menü nach Auswahl schließen
+            });
+        });
+
+        // Design beim Laden der Seite wiederherstellen
+        const savedTheme = localStorage.getItem('theme') || 'dark-mode';
+        
+        // 5. Technische 3D-Animation
+        let scene, camera, renderer, mesh;
+        let isFastSpinning = false; // Zustand für die Drehgeschwindigkeit
+        let currentGeometryIndex = 0;
+        const geometries = [
+            new THREE.IcosahedronGeometry(1.5, 0), // Icosahedron (Standard)
+            new THREE.BoxGeometry(2, 2, 2),       // Box
+            new THREE.TorusGeometry(1.5, 0.5, 16, 100), // Torus
+            new THREE.SphereGeometry(1.5, 32, 32),    // Sphere
+            new THREE.ConeGeometry(1.5, 3, 32)      // Cone
+        ];
+        
+        // Funktion zum Aktualisieren der Animationsfarbe basierend auf dem aktuellen CSS-Design
+        function updateAnimationColor() {
+            if (mesh) {
+                // Den aktuellen Wert der CSS-Variable --accent-color abrufen
+                const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+                const colorHex = new THREE.Color(accentColor);
+                
+                // Materialfarbe anpassen
+                mesh.material.color.set(colorHex);
+                mesh.material.emissive.set(colorHex);
+            }
+        }
+
+        function initAnimation() {
+            const container = document.getElementById('tech-animation-container');
+            const canvas = document.getElementById('animation-canvas');
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Zuerst versuchen, den letzten Zustand aus dem localStorage zu laden
+            try {
+                const savedIndex = localStorage.getItem('animationShapeIndex');
+                if (savedIndex !== null) {
+                    currentGeometryIndex = parseInt(savedIndex, 10);
+                }
+            } catch (e) {
+                console.error("Fehler beim Laden der Animationsform aus localStorage:", e);
+            }
+            
+            // Material für das Mesh
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: 0x00ffff,
+                roughness: 0.5,
+                metalness: 0.5,
+                flatShading: true
+            });
+            material.emissiveIntensity = 0.5;
+
+            // Initiales Mesh erstellen
+            mesh = new THREE.Mesh(geometries[currentGeometryIndex], material);
+            scene.add(mesh);
+            
+            // Beleuchtung hinzufügen
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const pointLight = new THREE.PointLight(0xffffff, 1);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            camera.position.z = 4;
+            
+            // Event-Listener für Größenänderung
+            window.addEventListener('resize', onWindowResize, false);
+            function onWindowResize() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+            onWindowResize();
+            
+            // Die Farbe der Animation an das aktuelle Design anpassen
+            updateAnimationColor();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (mesh) {
+                // Steuerung der Drehgeschwindigkeit
+                const rotationSpeed = isFastSpinning ? 0.05 : 0.005;
+                mesh.rotation.x += rotationSpeed;
+                mesh.rotation.y += rotationSpeed;
+            }
+            renderer.render(scene, camera);
+        }
+        
+        // Funktion zum Ändern der Form der 3D-Animation
+        function changeAnimationShape() {
+            // Aktuelles Mesh aus der Szene entfernen
+            scene.remove(mesh);
+
+            // Index für die nächste Geometrie erhöhen
+            currentGeometryIndex = (currentGeometryIndex + 1) % geometries.length;
+            
+            // Die neue Form im localStorage speichern
+            try {
+                localStorage.setItem('animationShapeIndex', currentGeometryIndex);
+            } catch (e) {
+                console.error("Fehler beim Speichern der Animationsform in localStorage:", e);
+            }
+
+            // Neues Mesh mit der nächsten Geometrie erstellen
+            mesh = new THREE.Mesh(geometries[currentGeometryIndex], mesh.material);
+            
+            // Neues Mesh zur Szene hinzufügen
+            scene.add(mesh);
+            
+            // Farbe sofort nach dem Formenwechsel aktualisieren
+            updateAnimationColor();
+        }
+
+        // Start der Animation nach dem Laden der Seite
+        window.onload = function() {
+            initAnimation();
+            animate();
+            applyTheme(savedTheme);
+        };
+
+        // 6. Click-Events für die 3D-Animation und die neue Kachel
+        const techAnimationContainer = document.getElementById('tech-animation-container');
+        techAnimationContainer.addEventListener('click', () => {
+            isFastSpinning = !isFastSpinning; // Zustand umschalten
+        });
+        
+        document.getElementById('change-shape-tile').addEventListener('click', (e) => {
+            e.preventDefault();
+            changeAnimationShape();
+        });
+    </script>
+</body>
+</html>
