@@ -4,140 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DASHBOARD</title>
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Poppins für ein klares, modernes Schriftbild -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* ========================================================== */
-        /* GLOBALE STILE UND RESPONSIVES DESIGN                      */
+        /* Design-Variablen und Stile                                 */
         /* ========================================================== */
-
-        /* CSS-Variablen für die Designs */
         :root {
-            /* Dunkler Modus (Standard) */
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --text-color: #f0f0f0;
-            --dark-bg: #1a1a2e;
-            --glow-color: #ff9900;
-            --accent-color: var(--glow-color);
-            --color-ok: #39ff14;
-            --color-warning: #ffcc00;
-            --color-critical: #ff0055;
-            --color-info: #0099ff;
+            /* Monolith-Modus (Standard) */
+            --bg-color: #1a1b26;
+            --text-color: #e0e6ef;
+            --main-accent-color: #e38a2e;
+            --secondary-accent-color: #6a6a99;
+            --card-bg: rgba(45, 46, 59, 0.6);
+            --card-border: rgba(90, 91, 115, 0.4);
+            --shadow-primary: 0 4px 15px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.5);
+            --card-radius: 20px;
         }
 
-        /* Heller Modus */
-        body.light-mode {
-            --glass-bg: rgba(255, 255, 255, 0.5);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-            --text-color: #333;
-            --dark-bg: #e0e0e0;
-            --glow-color: #007bff;
-            --accent-color: var(--glow-color);
-            --color-ok: #28a745;
-            --color-warning: #ffc107;
-            --color-critical: #dc3545;
-            --color-info: #17a2b8;
+        /* Apple-Stil-Modus (Heller, minimalistischer Stil) */
+        body.apple-style-mode {
+            --bg-color: #f5f5f7;
+            --text-color: #1d1d1f;
+            --main-accent-color: #007aff;
+            --secondary-accent-color: #8e8e93;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(200, 200, 200, 0.5);
+            --shadow-primary: 0 4px 16px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --card-radius: 12px;
         }
 
-        /* Grüner Akzent-Modus */
-        body.green-accent-mode {
-            --glow-color: #39ff14;
-            --accent-color: var(--glow-color);
+        /* NEU: Cyberpunk-Modus */
+        body.cyberpunk-mode {
+            --bg-color: #120f26;
+            --text-color: #c7f2ff;
+            --main-accent-color: #ff00ff;
+            --secondary-accent-color: #00ffff;
+            --card-bg: rgba(25, 20, 50, 0.7);
+            --card-border: rgba(50, 40, 100, 0.5);
+            --shadow-primary: 0 4px 15px rgba(0, 255, 255, 0.2);
+            --shadow-hover: 0 8px 30px rgba(255, 0, 255, 0.4);
+            --card-radius: 10px;
+        }
+        
+        /* NEU: Minimalist-Dunkel-Modus */
+        body.minimalist-dark-mode {
+            --bg-color: #2c2c34;
+            --text-color: #ededed;
+            --main-accent-color: #4a90e2;
+            --secondary-accent-color: #a0a0aa;
+            --card-bg: rgba(50, 50, 60, 0.7);
+            --card-border: rgba(70, 70, 80, 0.5);
+            --shadow-primary: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.3);
+            --card-radius: 15px;
         }
 
-        /* Blauer Neon-Modus */
-        body.blue-neon-mode {
-            --glass-bg: rgba(100, 150, 255, 0.1);
-            --glass-border: rgba(100, 150, 255, 0.3);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --text-color: #e0f2ff;
-            --dark-bg: #000033;
-            --glow-color: #00ffff;
-            --accent-color: var(--glow-color);
+        /* NEU: High-Contrast-Modus */
+        body.high-contrast-mode {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --main-accent-color: #ffffff;
+            --secondary-accent-color: #cccccc;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --shadow-primary: none;
+            --shadow-hover: 0 0 15px rgba(255, 255, 255, 0.5);
+            --card-radius: 5px;
         }
 
-        /* Solarized-Modus (Hell) */
-        body.solarized-light-mode {
-            --glass-bg: rgba(253, 246, 227, 0.5);
-            --glass-border: rgba(253, 246, 227, 0.8);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-            --text-color: #586e75;
-            --dark-bg: #fdf6e3;
-            --glow-color: #cb4b16;
-            --accent-color: var(--glow-color);
-        }
 
-        /* Globale Stile für den Body */
+        /* Globale Basisstile */
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
-            background-color: var(--dark-bg);
+            background-color: var(--bg-color);
             color: var(--text-color);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            padding: 20px;
+            padding: 2rem 1rem;
             box-sizing: border-box;
             transition: background-color 0.5s ease;
         }
 
-        /* Überschrift, die sich automatisch an die Bildschirmbreite anpasst */
-        .header {
-            text-align: center;
-            margin-bottom: 0;
-            margin-top: 0;
-        }
-
-        .header h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            margin-top: 0;
+        /* ========================================================== */
+        /* Layout-Container                                           */
+        /* ========================================================== */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
         }
 
         /* ========================================================== */
-        /* BENUTZER-ID UND STATUS                                   */
+        /* Burger-Menü & Header                                       */
         /* ========================================================== */
-        .status-bar {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            opacity: 0.7;
-            word-break: break-all;
-        }
-        .status-bar .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        .status-bar.loading .status-indicator { background-color: var(--color-warning); }
-        .status-bar.ready .status-indicator { background-color: var(--color-ok); }
-        .status-bar.error .status-indicator { background-color: var(--color-critical); }
-        
-        /* ========================================================== */
-        /* BURGER-MENÜ                                              */
-        /* ========================================================== */
-        .burger-menu-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+        .menu-container {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
             z-index: 1000;
         }
 
-        .burger-menu-icon {
+        .menu-toggle {
             width: 30px;
             height: 25px;
             display: flex;
@@ -146,26 +125,18 @@
             cursor: pointer;
         }
 
-        .burger-menu-icon span {
+        .menu-toggle span {
             display: block;
             width: 100%;
             height: 3px;
             background-color: var(--text-color);
             border-radius: 5px;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease;
         }
-
-        .burger-menu-icon.open span:nth-child(1) {
-            transform: translateY(11px) rotate(45deg);
-        }
-
-        .burger-menu-icon.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger-menu-icon.open span:nth-child(3) {
-            transform: translateY(-11px) rotate(-45deg);
-        }
+        
+        .menu-toggle.open span:nth-child(1) { transform: translateY(11px) rotate(45deg); }
+        .menu-toggle.open span:nth-child(2) { opacity: 0; }
+        .menu-toggle.open span:nth-child(3) { transform: translateY(-11px) rotate(-45deg); }
 
         .menu-overlay {
             position: fixed;
@@ -173,12 +144,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
             z-index: 999;
         }
 
@@ -189,78 +159,77 @@
 
         .menu-content {
             position: absolute;
-            top: 70px;
-            left: 20px;
-            background: var(--glass-bg);
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            padding: 30px;
-            text-align: center;
-        }
-
-        .menu-content h2 {
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
+            top: 5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .menu-option {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.2rem;
-            padding: 10px 20px;
-            margin: 10px 0;
-            background: var(--glass-bg);
-            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.2s ease, transform 0.2s ease;
             text-decoration: none;
             color: var(--text-color);
-            display: block;
-            border: 1px solid var(--glass-border);
+            font-weight: 500;
         }
 
         .menu-option:hover {
             background: rgba(255, 255, 255, 0.2);
-            box-shadow: var(--glass-shadow);
+            transform: scale(1.02);
         }
 
-        .menu-option.active {
-            border: 2px solid var(--accent-color);
-            box-shadow: 0 0 10px var(--accent-color);
+        .main-info {
+            text-align: center;
+        }
+
+        .main-info h1 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        body.apple-style-mode .main-info h1 {
+            text-shadow: none;
         }
 
         /* ========================================================== */
-        /* KACHEL-RASTER UND ANDERE ELEMENTE                        */
+        /* Kachel-Raster - NOCH KLEINER UND KOMPAKTER                      */
         /* ========================================================== */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 600px;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 1rem;
             width: 100%;
-            margin-bottom: 0;
         }
-
+        
         @media (min-width: 768px) {
             .grid-container {
                 grid-template-columns: repeat(6, 1fr);
-                gap: 20px;
+                gap: 1.5rem;
             }
         }
-
         @media (min-width: 1024px) {
             .grid-container {
-                max-width: 900px;
+                gap: 2rem;
             }
         }
 
         .tile {
             position: relative;
-            background: var(--glass-bg);
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-primary);
             aspect-ratio: 1 / 1;
             display: flex;
             flex-direction: column;
@@ -269,700 +238,237 @@
             text-align: center;
             text-decoration: none;
             color: var(--text-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             cursor: pointer;
-            padding: 10px;
+            padding: 0.5rem;
         }
 
         .tile:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 0 15px var(--accent-color), 0 0 25px var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            background: rgba(255, 255, 255, 0.1);
         }
-
-        .tile.editing {
-            border: 2px solid var(--color-warning);
-            transform: none;
+        body.apple-style-mode .tile:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            background: rgba(255, 255, 255, 0.9);
         }
-        
-        .tile.empty {
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            cursor: default;
+        body.cyberpunk-mode .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--main-accent-color);
+            background: rgba(255, 0, 255, 0.1);
+        }
+        body.minimalist-dark-mode .tile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            background: rgba(70, 70, 80, 0.8);
+        }
+        body.high-contrast-mode .tile:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .tile .icon {
             font-size: clamp(1.5rem, 3vw, 2.5rem);
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             line-height: 1;
         }
 
         .tile .text {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(0.7rem, 2vw, 1rem);
-            font-weight: 400;
+            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+            font-weight: 500;
             line-height: 1.2;
-            text-transform: uppercase;
+            text-transform: none;
+            opacity: 0.9;
         }
         
-        .loading-text {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(1rem, 2vw, 1.5rem);
-            opacity: 0.8;
-            text-align: center;
-            margin-top: 50px;
+        /* ========================================================== */
+        /* Suche, Uhr & Animation - am unteren Rand platziert        */
+        /* ========================================================== */
+        .bottom-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem; /* Abstand mobil verringert */
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .bottom-container {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                gap: 0; /* Abstand horizontal auf 0 gesetzt */
+            }
         }
 
         .search-container {
             width: 100%;
-            max-width: 500px;
-            display: flex;
-            justify-content: center;
-            margin-top: 25px;
-            margin-bottom: 10px;
+            max-width: 400px;
         }
 
         .search-box {
-            background: var(--glass-bg);
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--glass-shadow);
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-primary);
             display: flex;
             overflow: hidden;
             width: 100%;
+            backdrop-filter: blur(10px);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            box-shadow: 0 0 0 2px var(--main-accent-color);
         }
 
         .search-input {
             flex-grow: 1;
-            padding: 12px 20px;
-            font-size: 1rem;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.9rem;
             border: none;
             background: transparent;
             color: var(--text-color);
             outline: none;
-            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
         }
 
         .search-input::placeholder {
-            color: rgba(240, 240, 240, 0.7);
+            color: var(--secondary-accent-color);
+            opacity: 0.7;
         }
-
+        
         .search-button {
-            padding: 12px 25px;
-            font-size: 1rem;
+            padding: 0.7rem 1.1rem;
+            font-size: 0.9rem;
             border: none;
-            background: var(--accent-color);
-            color: var(--dark-bg);
+            background: var(--main-accent-color);
+            color: var(--bg-color);
             cursor: pointer;
             transition: background 0.3s ease;
-            font-family: 'Poppins', sans-serif;
             font-weight: 600;
         }
 
         .search-button:hover {
-            background: #ffcc66;
             filter: brightness(1.2);
         }
 
-        body.green-accent-mode .search-button:hover,
-        body.blue-neon-mode .search-button:hover,
-        body.solarized-light-mode .search-button:hover {
-            filter: brightness(1.2);
-        }
-
-        .nixie-clock {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(1.5rem, 4vw, 3rem);
-            text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color);
-            color: var(--accent-color);
-            letter-spacing: 2px;
-            line-height: 1.2;
+        .digital-clock {
+            font-size: clamp(1rem, 2.5vw, 2rem);
+            font-weight: 300;
+            letter-spacing: -1px;
+            color: var(--main-accent-color);
+            transition: color 0.4s ease;
             text-align: center;
-            margin-top: 20px;
         }
 
-        .nixie-clock .date {
-            font-size: clamp(1rem, 2vw, 1.5rem);
-            opacity: 0.8;
-            margin-top: 5px;
+        .date {
+            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+            font-weight: 400;
+            opacity: 0.7;
+            margin-top: -0.2rem;
+            text-align: center;
         }
 
-        /* Responsive 3D-Animation */
-        .tech-animation-container {
-            width: clamp(100px, 20vw, 200px);
+        .animation-container {
+            width: clamp(80px, 12vw, 150px);
             aspect-ratio: 1 / 1;
-            overflow: hidden;
             cursor: pointer;
             transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: -15px;
         }
-
-        .tech-animation-container:hover {
+        
+        .animation-container:hover {
             transform: scale(1.05);
         }
 
-        /* Container für die neue Formänderungsbox */
-        .change-shape-container, .edit-mode-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: var(--glass-bg);
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--glass-shadow);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: pointer;
-            padding: 5px;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: transform 0.3s ease;
-        }
-
-        .change-shape-container:hover, .edit-mode-container:hover {
-            transform: scale(1.1);
-        }
-        
-        .change-shape-container {
-            bottom: 80px;
-        }
-
-        .change-shape-container .icon, .edit-mode-container .icon {
-            font-size: 1.5rem;
-            line-height: 1;
-        }
-
-        .change-shape-container .text, .edit-mode-container .text {
-            display: none;
-        }
-
-        /* Modales Dialogfeld */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
+        #animation-canvas {
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: var(--glass-bg);
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        .modal.visible .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-content h3 {
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
-            margin-top: 0;
-        }
-        .modal-content input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: var(--text-color);
-            outline: none;
-        }
-        .modal-content input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 5px var(--accent-color);
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        .modal-buttons button {
-            flex: 1;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .modal-buttons .save-button {
-            background: var(--color-ok);
-            color: var(--dark-bg);
-        }
-        .modal-buttons .delete-button {
-            background: var(--color-critical);
-            color: var(--dark-bg);
-        }
-        .modal-buttons .cancel-button {
-            background: var(--color-info);
-            color: var(--dark-bg);
-        }
-        .modal-buttons button:hover {
-            transform: translateY(-2px);
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- Burger-Menü-Icon -->
-    <div class="burger-menu-container">
-        <div class="burger-menu-icon" id="burger-menu-icon">
+    <div class="menu-container">
+        <div class="menu-toggle" id="menu-toggle">
             <span></span>
             <span></span>
             <span></span>
         </div>
     </div>
-
-    <!-- Menü-Overlay -->
+    
     <div class="menu-overlay" id="menu-overlay">
         <div class="menu-content">
-            <h2>Design wählen</h2>
-            <a href="#" class="menu-option" data-theme="dark-mode">Dunkler Modus</a>
-            <a href="#" class="menu-option" data-theme="light-mode">Heller Modus</a>
-            <a href="#" class="menu-option" data-theme="green-accent-mode">Grün-Akzent</a>
-            <a href="#" class="menu-option" data-theme="blue-neon-mode">Blau-Neon</a>
-            <a href="#" class="menu-option" data-theme="solarized-light-mode">Solarisiert</a>
+            <div class="menu-option" data-theme="monolith-mode">Monolith</div>
+            <div class="menu-option" data-theme="apple-style-mode">Apple Stil</div>
+            <div class="menu-option" data-theme="cyberpunk-mode">Cyberpunk</div>
+            <div class="menu-option" data-theme="minimalist-dark-mode">Minimalistisch</div>
+            <div class="menu-option" data-theme="high-contrast-mode">High Contrast</div>
         </div>
     </div>
 
-    <!-- Technische Animation -->
-    <div class="tech-animation-container" id="tech-animation-container">
-        <canvas id="animation-canvas"></canvas>
-    </div>
+    <main class="dashboard-container">
+        <header class="main-info">
+            <h1 id="greeting-title"></h1>
+        </header>
+        
+        <section class="grid-container">
+            <a href="https://www.icloud.com/mail/" target="_blank" class="tile"><div class="icon">📧</div><div class="text">iCloud Mail</div></a>
+            <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="tile"><div class="icon">📨</div><div class="text">Gmail</div></a>
+            <a href="https://eckdde.sharepoint.com/sites/Startseite-Intranet" target="_blank" class="tile"><div class="icon">🏢</div><div class="text">Intranet</div></a>
+            <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile"><div class="icon">📖</div><div class="text">Wiki</div></a>
+            <a href="https://login.hrworks.de/?companyId=eckd&directssologin=true" target="_blank" class="tile"><div class="icon">👔</div><div class="text">HR Works</div></a>
+            <a href="https://apps.churchx.de/itm-kiris-eckd-prod" target="_blank" class="tile"><div class="icon">⛪</div><div class="text">Kiris</div></a>
+            <a href="https://chat.openai.com/" target="_blank" class="tile"><div class="icon">🤖</div><div class="text">ChatGPT</div></a>
+            <a href="https://gemini.google.com/?hl=de" target="_blank" class="tile"><div class="icon">✨</div><div class="text">Gemini</div></a>
+            <a href="https://m365.cloud.microsoft:443/chat/?titleId=T_82714181-8fcd-715b-fe7b-98ba417f56d0&source=embedded-builder" target="_blank" class="tile"><div class="icon">💼</div><div class="text">Copilot</div></a>
+            <a href="https://news.google.com/" target="_blank" class="tile"><div class="icon">📰</div><div class="text">Google News</div></a>
+            <a href="https://ekkw.cloud.com" target="_blank" class="tile"><div class="icon">☁️</div><div class="text">EKKW Cloud</div></a>
+            <a href="https://www.bild.de/" target="_blank" class="tile"><div class="icon">📰</div><div class="text">Bild.de</div></a>
+        </section>
 
-    <!-- Hauptüberschrift (jetzt wieder dynamisch) -->
-    <header class="header">
-        <h1 id="greeting-title"></h1>
-    </header>
-
-    <div class="status-bar" id="status-bar">
-        <span class="status-indicator" id="status-indicator"></span>
-        <span id="user-id-display"></span>
-    </div>
-
-    <!-- Kacheln werden dynamisch von JavaScript hinzugefügt -->
-    <main class="grid-container" id="grid-container"></main>
-
-    <!-- Suchfeld -->
-    <div class="search-container">
-        <div class="search-box">
-            <input type="text" id="search-input" class="search-input" placeholder="In Google suchen">
-            <button id="search-button" class="search-button">Suchen</button>
-        </div>
-    </div>
-
-    <!-- Uhr -->
-    <div class="nixie-clock" id="nixie-clock">
-        <div id="time"></div>
-        <div class="date" id="date"></div>
-    </div>
-
-    <!-- Buttons für Animation und Bearbeitungsmodus -->
-    <a href="#" id="change-shape-tile" class="change-shape-container">
-        <div class="icon">🔄</div>
-        <div class="text">ANIMATION ÄNDERN</div>
-    </a>
-    <a href="#" id="edit-mode-tile" class="edit-mode-container" style="bottom: 20px;">
-        <div class="icon">✏️</div>
-        <div class="text">LINKS BEARBEITEN</div>
-    </a>
-
-    <!-- Modales Dialogfeld für die Link-Bearbeitung -->
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-title">Link bearbeiten</h3>
-            <!-- NEUES EINGABEFELD FÜR DAS ICON -->
-            <input type="text" id="link-icon-input" placeholder="Icon/Emoji (z.B. 🌐, 📧, 💡)">
-            <input type="text" id="link-name-input" placeholder="Link-Name">
-            <input type="url" id="link-url-input" placeholder="URL">
-            <div class="modal-buttons">
-                <button class="save-button" id="modal-save">Speichern</button>
-                <button class="delete-button" id="modal-delete">Löschen</button>
-                <button class="cancel-button" id="modal-cancel">Abbrechen</button>
+        <div class="bottom-container">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="search-input" class="search-input" placeholder="Google durchsuchen">
+                    <button id="search-button" class="search-button">Suchen</button>
+                </div>
+            </div>
+            <div class="animation-container" id="animation-container">
+                <canvas id="animation-canvas"></canvas>
+            </div>
+            <div>
+                <div class="digital-clock" id="clock-display"></div>
+                <div class="date" id="date-display"></div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Three.js Bibliothek -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        setLogLevel('debug');
-
-        // --- Firebase Globale Variablen ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // --- App-Variablen ---
-        let links = [];
-        let isEditMode = false;
-        let db;
-        let auth;
-        let userId;
-        let isAuthReady = false;
-        let unsubscribeFromLinks;
-        let currentEditingLink = null;
-
-        // --- DOM-Elemente ---
-        const gridContainer = document.getElementById('grid-container');
-        const editModeTile = document.getElementById('edit-mode-tile');
-        const editModal = document.getElementById('edit-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const linkIconInput = document.getElementById('link-icon-input');
-        const linkNameInput = document.getElementById('link-name-input');
-        const linkUrlInput = document.getElementById('link-url-input');
-        const modalSaveBtn = document.getElementById('modal-save');
-        const modalDeleteBtn = document.getElementById('modal-delete');
-        const modalCancelBtn = document.getElementById('modal-cancel');
-        const userIdDisplay = document.getElementById('user-id-display');
-        const statusBar = document.getElementById('status-bar');
-
-        // Standard-Links
-        const defaultLinks = [
-            { icon: '📧', text: 'ICLOUD MAIL', url: 'https://www.icloud.com/mail/' },
-            { icon: '📨', text: 'GMAIL', url: 'https://mail.google.com/mail/u/0/#inbox' },
-            { icon: '🏢', text: 'INTRANET', url: 'https://eckdde.sharepoint.com/sites/Startseite-Intranet' },
-            { icon: '📖', text: 'WIKI', url: 'https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde' },
-            { icon: '👔', text: 'HRWORKS', url: 'https://login.hrworks.de/?companyId=eckd&directssologin=true' },
-            { icon: '⛪', text: 'KIRIS', url: 'https://apps.churchx.de/itm-kiris-eckd-prod' },
-            { icon: '🤖', text: 'CHATGPT', url: 'https://chat.openai.com/' },
-            { icon: '✨', text: 'GEMINI', url: 'https://gemini.google.com/?hl=de' },
-            { icon: '💼', text: 'COPILOT', url: 'https://m365.cloud.microsoft:443/chat/?titleId=T_82714181-8fcd-715b-fe7b-98ba417f56d0&source=embedded-builder' },
-            { icon: '📰', text: 'GOOGLE NEWS', url: 'https://news.google.com/' },
-            { icon: '☁️', text: 'EKKW-CLOUD', url: 'https://ekkw.cloud.com' },
-            { icon: '📰', text: 'BILD', url: 'https://www.bild.de/' },
-        ];
-
-        // --- Firebase Setup ---
-        async function setupFirebase() {
-            try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                statusBar.classList.add('loading');
-                userIdDisplay.textContent = 'Verbinde mit der Cloud...';
-
-                await new Promise((resolve, reject) => {
-                    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                        unsubscribe();
-                        if (user) {
-                            userId = user.uid;
-                        } else {
-                            if (initialAuthToken) {
-                                await signInWithCustomToken(auth, initialAuthToken);
-                            } else {
-                                await signInAnonymously(auth);
-                            }
-                            userId = auth.currentUser.uid;
-                        }
-                        isAuthReady = true;
-                        resolve();
-                    }, (error) => {
-                        console.error('Authentifizierungsfehler:', error);
-                        statusBar.classList.remove('loading');
-                        statusBar.classList.add('error');
-                        userIdDisplay.textContent = 'Fehler bei der Anmeldung.';
-                        reject(error);
-                    });
-                });
-
-                userIdDisplay.textContent = `Verbunden als: ${userId}`;
-                statusBar.classList.remove('loading');
-                statusBar.classList.add('ready');
-
-                startLinksSync();
-
-            } catch (error) {
-                console.error("Fehler beim Initialisieren von Firebase:", error);
-                statusBar.classList.remove('loading');
-                statusBar.classList.add('error');
-                userIdDisplay.textContent = 'Verbindungsfehler zur Cloud.';
-            }
-        }
-
-        // --- Links synchronisieren ---
-        function startLinksSync() {
-            if (unsubscribeFromLinks) {
-                unsubscribeFromLinks();
-            }
-            const userLinksDocRef = doc(db, `artifacts/${appId}/users/${userId}/dashboard/links_doc`);
-            
-            unsubscribeFromLinks = onSnapshot(userLinksDocRef, async (docSnap) => {
-                if (docSnap.exists() && docSnap.data().links) {
-                    // Daten aus der Cloud laden
-                    links = docSnap.data().links;
-                } else {
-                    // Wenn keine Daten vorhanden, Standard-Links in die Datenbank schreiben
-                    const docExists = (await getDoc(userLinksDocRef)).exists();
-                    if (!docExists) {
-                         await saveLinks(defaultLinks);
-                         links = defaultLinks;
-                    }
-                }
-                renderLinks();
-            }, (error) => {
-                console.error("Fehler beim Abrufen der Links:", error);
-                statusBar.classList.remove('ready');
-                statusBar.classList.add('error');
-                userIdDisplay.textContent = 'Fehler beim Synchronisieren der Daten.';
-            });
-        }
-
-        // --- Links in der Datenbank speichern ---
-        async function saveLinks(newLinks) {
-            if (!isAuthReady || !userId) {
-                console.error("Firebase nicht bereit oder Benutzer-ID fehlt.");
-                return;
-            }
-            const userLinksDocRef = doc(db, `artifacts/${appId}/users/${userId}/dashboard/links_doc`);
-            try {
-                await setDoc(userLinksDocRef, { links: newLinks });
-                console.log("Links erfolgreich gespeichert.");
-            } catch (e) {
-                console.error("Fehler beim Speichern der Links:", e);
-                // Hier könntest du eine Fehlermeldung in der UI anzeigen
-            }
-        }
-
-        // --- Links dynamisch rendern ---
-        function renderLinks() {
-            gridContainer.innerHTML = '';
-            
-            if (links.length === 0 && !isEditMode) {
-                 gridContainer.innerHTML = '<div class="loading-text">Noch keine Links vorhanden. Starte den Bearbeitungsmodus, um welche hinzuzufügen.</div>';
-                 return;
-            }
-
-            links.forEach((link, index) => {
-                const tile = document.createElement('a');
-                tile.className = 'tile';
-                if (isEditMode) {
-                    tile.href = '#';
-                    tile.classList.add('editing');
-                    tile.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        showEditModal(link, index);
-                    });
-                } else {
-                    tile.href = link.url;
-                    tile.target = '_blank';
-                }
-
-                const iconDiv = document.createElement('div');
-                iconDiv.className = 'icon';
-                iconDiv.textContent = link.icon;
-                tile.appendChild(iconDiv);
-
-                const textDiv = document.createElement('div');
-                textDiv.className = 'text';
-                textDiv.textContent = link.text;
-                tile.appendChild(textDiv);
-
-                gridContainer.appendChild(tile);
-            });
-
-            if (isEditMode) {
-                const addTile = document.createElement('a');
-                addTile.className = 'tile';
-                addTile.href = '#';
-                addTile.classList.add('editing');
-                addTile.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showEditModal(null);
-                });
-                const iconDiv = document.createElement('div');
-                iconDiv.className = 'icon';
-                iconDiv.textContent = '➕';
-                addTile.appendChild(iconDiv);
-                const textDiv = document.createElement('div');
-                textDiv.className = 'text';
-                textDiv.textContent = 'LINK HINZUFÜGEN';
-                addTile.appendChild(textDiv);
-                gridContainer.appendChild(addTile);
-            }
-        }
-
-        // --- Bearbeitungsmodus ---
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            editModeTile.style.backgroundColor = isEditMode ? 'var(--color-warning)' : '';
-            editModeTile.style.borderColor = isEditMode ? 'var(--color-warning)' : 'var(--glass-border)';
-            renderLinks();
-        }
-
-        editModeTile.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleEditMode();
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
         });
 
-        // --- Modales Dialogfeld ---
-        function showEditModal(link, index) {
-            currentEditingLink = link ? { ...link, index } : null;
-            modalTitle.textContent = link ? 'Link bearbeiten' : 'Link hinzufügen';
-            linkIconInput.value = link ? link.icon : '🌐';
-            linkNameInput.value = link ? link.text : '';
-            linkUrlInput.value = link ? link.url : '';
-            modalDeleteBtn.style.display = link ? 'block' : 'none';
-            editModal.classList.add('visible');
-        }
+        const ELEMENTS = {
+            greetingTitle: document.getElementById('greeting-title'),
+            clockDisplay: document.getElementById('clock-display'),
+            dateDisplay: document.getElementById('date-display'),
+            searchInput: document.getElementById('search-input'),
+            searchButton: document.getElementById('search-button'),
+            menuToggle: document.getElementById('menu-toggle'),
+            menuOverlay: document.getElementById('menu-overlay'),
+            menuOptions: document.querySelectorAll('.menu-option'),
+            animationContainer: document.getElementById('animation-container'),
+            animationCanvas: document.getElementById('animation-canvas'),
+        };
 
-        function hideEditModal() {
-            editModal.classList.remove('visible');
-        }
-
-        modalSaveBtn.addEventListener('click', () => {
-            const icon = linkIconInput.value.trim() || '🌐';
-            const name = linkNameInput.value.trim().toUpperCase();
-            const url = linkUrlInput.value.trim();
-            if (name && url) {
-                const newLinks = [...links];
-                if (currentEditingLink) {
-                    newLinks[currentEditingLink.index].icon = icon;
-                    newLinks[currentEditingLink.index].text = name;
-                    newLinks[currentEditingLink.index].url = url;
-                } else {
-                    newLinks.push({ icon, text: name, url });
-                }
-                saveLinks(newLinks);
-                hideEditModal();
-            }
-        });
-
-        modalDeleteBtn.addEventListener('click', () => {
-            if (currentEditingLink) {
-                const newLinks = [...links];
-                newLinks.splice(currentEditingLink.index, 1);
-                saveLinks(newLinks);
-                hideEditModal();
-            }
-        });
-
-        modalCancelBtn.addEventListener('click', hideEditModal);
-
-        // --- Zusätzliche Funktionen ---
-        function updateGreeting() {
-            const now = new Date();
-            const hour = now.getHours();
-            let dynamicPart;
-
-            if (hour >= 5 && hour < 10) {
-                dynamicPart = 'MORGEN';
-            } else if (hour >= 10 && hour < 19) {
-                dynamicPart = 'TAG';
-            } else {
-                dynamicPart = 'ABEND';
-            }
-            document.getElementById('greeting-title').textContent = `HALLO HEIKO, ICH WÜNSCHE DIR EINEN SCHÖNEN ${dynamicPart}`.toUpperCase();
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const date = now.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('time').textContent = time;
-            document.getElementById('date').textContent = date;
-        }
-
-        setInterval(updateClock, 1000);
-        updateClock();
-        updateGreeting();
-
-        document.getElementById('search-button').addEventListener('click', () => {
-            const input = document.getElementById('search-input');
-            const query = input.value;
-            if (query) {
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                input.value = '';
-            }
-        });
-
-        document.getElementById('search-input').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                document.getElementById('search-button').click();
-            }
-        });
-
-        const burgerIcon = document.getElementById('burger-menu-icon');
-        const menuOverlay = document.getElementById('menu-overlay');
-        const menuOptions = document.querySelectorAll('.menu-option');
-
-        function toggleMenu() {
-            burgerIcon.classList.toggle('open');
-            menuOverlay.classList.toggle('open');
-        }
-
-        function applyTheme(theme) {
-            document.body.classList.remove('dark-mode', 'light-mode', 'green-accent-mode', 'blue-neon-mode', 'solarized-light-mode');
-            if (theme !== 'dark-mode') {
-                document.body.classList.add(theme);
-            }
-            localStorage.setItem('theme', theme);
-            updateAnimationColor();
-            menuOptions.forEach(option => {
-                option.classList.remove('active');
-                if (option.dataset.theme === theme) {
-                    option.classList.add('active');
-                }
-            });
-        }
-
-        burgerIcon.addEventListener('click', toggleMenu);
-        menuOverlay.addEventListener('click', (e) => {
-            if (e.target.classList.contains('menu-overlay')) {
-                toggleMenu();
-            }
-        });
-
-        menuOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.preventDefault();
-                const selectedTheme = e.target.dataset.theme;
-                applyTheme(selectedTheme);
-                toggleMenu();
-            });
-        });
-
-        const savedTheme = localStorage.getItem('theme') || 'dark-mode';
-
-        // --- 3D-Animation ---
-        let scene, camera, renderer, mesh;
         let isFastSpinning = false;
+        let scene, camera, renderer, mesh;
         let currentGeometryIndex = 0;
         const geometries = [
             new THREE.IcosahedronGeometry(1.5, 0),
@@ -972,34 +478,106 @@
             new THREE.ConeGeometry(1.5, 3, 32)
         ];
 
-        function updateAnimationColor() {
-            if (mesh) {
-                const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
-                const colorHex = new THREE.Color(accentColor);
-                mesh.material.color.set(colorHex);
-                mesh.material.emissive.set(colorHex);
-            }
+        function initDashboard() {
+            updateGreeting();
+            updateClock();
+            setInterval(updateClock, 1000);
+            setupEventListeners();
+            initAnimation();
+            animate();
+            loadSavedTheme();
         }
 
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            const timeOfDay = (hour >= 5 && hour < 10) ? 'MORGEN' :
+                              (hour >= 10 && hour < 19) ? 'TAG' : 'ABEND';
+            ELEMENTS.greetingTitle.textContent = `Guten ${timeOfDay}, Heiko!`.toUpperCase();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const date = now.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            ELEMENTS.clockDisplay.textContent = time;
+            ELEMENTS.dateDisplay.textContent = date;
+        }
+
+        function setupEventListeners() {
+            ELEMENTS.searchButton.addEventListener('click', handleSearch);
+            ELEMENTS.searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+            ELEMENTS.menuToggle.addEventListener('click', toggleMenu);
+            ELEMENTS.menuOverlay.addEventListener('click', (e) => {
+                if (e.target.classList.contains('menu-overlay')) toggleMenu();
+            });
+            ELEMENTS.menuOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    applyTheme(e.target.dataset.theme);
+                    toggleMenu();
+                });
+            });
+            ELEMENTS.animationContainer.addEventListener('click', () => {
+                isFastSpinning = !isFastSpinning;
+            });
+            ELEMENTS.animationContainer.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                changeAnimationShape();
+            });
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function handleSearch() {
+            const query = ELEMENTS.searchInput.value;
+            if (query) {
+                // Einfache URL-Erkennung für direkte Navigation
+                let url = query;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    // Ist es eine Domain?
+                    if (url.includes('.') && !url.includes(' ')) {
+                        url = 'http://' + url;
+                    } else {
+                        // Ansonsten Google-Suche
+                        url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    }
+                }
+                window.open(url, '_blank');
+                ELEMENTS.searchInput.value = '';
+            }
+        }
+        
+        function toggleMenu() {
+            ELEMENTS.menuToggle.classList.toggle('open');
+            ELEMENTS.menuOverlay.classList.toggle('open');
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.remove('monolith-mode', 'apple-style-mode', 'cyberpunk-mode', 'minimalist-dark-mode', 'high-contrast-mode');
+            document.body.classList.add(theme);
+            localStorage.setItem('theme', theme);
+            updateAnimationColor();
+        }
+
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'monolith-mode';
+            applyTheme(savedTheme);
+        }
+
+        // ==========================================================
+        // Three.js 3D-Animation
+        // ==========================================================
         function initAnimation() {
-            const container = document.getElementById('tech-animation-container');
-            const canvas = document.getElementById('animation-canvas');
+            const container = ELEMENTS.animationContainer;
+            const canvas = ELEMENTS.animationCanvas;
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
-
-            try {
-                const savedIndex = localStorage.getItem('animationShapeIndex');
-                if (savedIndex !== null) {
-                    currentGeometryIndex = parseInt(savedIndex, 10);
-                }
-            } catch (e) {
-                console.error("Fehler beim Laden der Animationsform aus localStorage:", e);
-            }
-
+            
             const material = new THREE.MeshStandardMaterial({
                 color: 0xffffff,
                 emissive: 0x00ffff,
@@ -1008,21 +586,25 @@
                 flatShading: true
             });
             material.emissiveIntensity = 0.5;
+
+            try {
+                const savedIndex = localStorage.getItem('animationShapeIndex');
+                if (savedIndex !== null) {
+                    currentGeometryIndex = parseInt(savedIndex, 10);
+                }
+            } catch (e) {
+                console.error("Fehler beim Laden der Animationsform:", e);
+            }
+            
             mesh = new THREE.Mesh(geometries[currentGeometryIndex], material);
             scene.add(mesh);
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            scene.add(ambientLight);
+            
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
             const pointLight = new THREE.PointLight(0xffffff, 1);
             pointLight.position.set(5, 5, 5);
             scene.add(pointLight);
+
             camera.position.z = 4;
-            window.addEventListener('resize', onWindowResize, false);
-            function onWindowResize() {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            }
-            onWindowResize();
             updateAnimationColor();
         }
 
@@ -1035,36 +617,33 @@
             }
             renderer.render(scene, camera);
         }
+        
+        function updateAnimationColor() {
+            if (mesh) {
+                const accentColor = getComputedStyle(document.body).getPropertyValue('--main-accent-color').trim();
+                const colorHex = new THREE.Color(accentColor);
+                mesh.material.color.set(colorHex);
+                mesh.material.emissive.set(colorHex);
+            }
+        }
 
         function changeAnimationShape() {
             scene.remove(mesh);
             currentGeometryIndex = (currentGeometryIndex + 1) % geometries.length;
-            try {
-                localStorage.setItem('animationShapeIndex', currentGeometryIndex);
-            } catch (e) {
-                console.error("Fehler beim Speichern der Animationsform in localStorage:", e);
-            }
+            localStorage.setItem('animationShapeIndex', currentGeometryIndex);
             mesh = new THREE.Mesh(geometries[currentGeometryIndex], mesh.material);
             scene.add(mesh);
             updateAnimationColor();
         }
 
-        window.onload = function() {
-            setupFirebase();
-            initAnimation();
-            animate();
-            applyTheme(savedTheme);
-        };
-
-        const techAnimationContainer = document.getElementById('tech-animation-container');
-        techAnimationContainer.addEventListener('click', () => {
-            isFastSpinning = !isFastSpinning;
-        });
-
-        document.getElementById('change-shape-tile').addEventListener('click', (e) => {
-            e.preventDefault();
-            changeAnimationShape();
-        });
+        function onWindowResize() {
+            const container = ELEMENTS.animationContainer;
+            if (camera && renderer && container) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        }
     </script>
 </body>
 </html>
