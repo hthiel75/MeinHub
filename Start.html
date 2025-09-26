@@ -6,6 +6,8 @@
     <title>Meine iPhone Startseite</title>
     <!-- Lade Tailwind CSS für modernes, responsives Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lade Three.js für 3D Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Setze die Schriftart auf Inter -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
@@ -66,6 +68,7 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             transition: all 0.2s ease-in-out;
+            /* Die Kacheln bleiben uniform dank aspect-square in der Klasse */
             box-shadow: 0 4px 15px var(--shadow-color);
             border: 1px solid var(--border-color);
         }
@@ -104,43 +107,17 @@
             transform: scale(0.95);
         }
         
-        /* --- ANIMATION: LIQUID WAVE AM UNTEREN RAND --- */
-        #cool-animation {
+        /* --- ANIMATION: 3D ROTATING SHAPE (THREE.JS) --- */
+        #three-canvas {
             position: fixed; 
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 150px; /* Sichtbare Höhe */
-            overflow: hidden;
+            height: 150px; /* Sichtbare Höhe der 3D-Bühne */
             z-index: 0; /* Hinter allen Inhalten */
             pointer-events: none; /* Macht es nicht klickbar */
-        }
-
-        .wave {
-            position: absolute;
-            width: 200%;
-            height: 100%;
-            bottom: -50px; /* Startpunkt unterhalb der Sichtlinie */
-            left: -50%;
-            background: var(--accent-color); /* Nutzt Akzentfarbe des Themas */
-            opacity: 0.15; /* Sehr subtil */
-            /* Erzeugt eine unregelmäßige, wellenförmige Kurve */
-            border-radius: 40% 50% 30% 60% / 100% 100% 100% 100%; 
-            animation: waveAnimation 15s linear infinite;
-            transform: translate3d(0, 0, 0); 
-        }
-
-        .wave.layer2 {
-            opacity: 0.1;
-            /* Bewegt sich langsamer und in umgekehrter Richtung */
-            animation: waveAnimation 20s linear infinite reverse; 
-            transform: scale(1.1) rotate(1deg);
-        }
-        
-        @keyframes waveAnimation {
-            0% { transform: translateX(0) translateZ(0) scaleY(1); }
-            50% { transform: translateX(-25%) translateZ(0) scaleY(0.9); }
-            100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+            opacity: 0.7; /* Subtil halten */
+            transition: opacity 0.5s;
         }
 
     </style>
@@ -180,6 +157,9 @@
         // Deklaration der globalen Variablen, die die DOM-Elemente halten werden
         let overlay;
         let panel;
+
+        // Deklariere Three.js globale Variablen
+        let scene, camera, renderer, object;
 
         // toggleSettingsPanel als gehostete Funktion deklarieren
         function toggleSettingsPanel(forceState) {
@@ -227,10 +207,14 @@
             
             // Aktualisiere die Begrüßung nach dem Theme-Wechsel
             updateGreeting();
+
+            // NEU: Aktualisiere die Farbe des 3D-Objekts
+            updateThreeDColor();
         }
         
         function loadTheme() {
             const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+            // Wende das Theme an. applyTheme ruft updateThreeDColor() auf.
             applyTheme(savedTheme);
         }
         
@@ -275,7 +259,103 @@
                 `;
             }
         }
+        
+        // --- THREE.JS LOGIK ---
+        
+        function initThree() {
+            const container = document.getElementById('three-canvas');
+            if (!container || typeof THREE === 'undefined') return;
 
+            // 1. Szene
+            scene = new THREE.Scene();
+            
+            // 2. Kamera (PerspectiveCamera)
+            // Die tatsächliche Größe wird in onWindowResize() gesetzt
+            const width = container.clientWidth || window.innerWidth; 
+            const height = container.clientHeight || 150; 
+            camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.z = 1.5;
+
+            // 3. Renderer (WebGL)
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: container, 
+                alpha: true, // Macht den Hintergrund transparent
+                antialias: true 
+            });
+            // WICHTIG: Setze Pixelverhältnis für scharfe Darstellung auf Retina-Displays
+            renderer.setPixelRatio(window.devicePixelRatio); 
+            renderer.setSize(width, height);
+            
+            // Ermittle die Akzentfarbe (wird durch updateThreeDColor() aktualisiert)
+            const accentColorStyle = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+            const initialColor = new THREE.Color(accentColorStyle);
+
+            // 4. Geometrie (TorusKnoten ist visuell interessant)
+            const geometry = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16);
+            
+            // 5. Material (Physikalisches Material für metallische, glänzende Oberfläche)
+            const material = new THREE.MeshPhysicalMaterial({ 
+                color: initialColor,
+                metalness: 0.9,
+                roughness: 0.1,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1,
+            });
+            
+            object = new THREE.Mesh(geometry, material);
+            scene.add(object);
+
+            // 6. Licht
+            // Ambient Light (Grundbeleuchtung)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            // Directional Light (Schatten und Highlights)
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            // Event Listener für Größenänderungen
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+            const container = document.getElementById('three-canvas');
+            if (!container) return;
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        function animateThree() {
+            // Endlosschleife für die Animation
+            requestAnimationFrame(animateThree);
+            
+            if (object) {
+                // Kontinuierliche Rotation
+                object.rotation.x += 0.005;
+                object.rotation.y += 0.008;
+                object.rotation.z += 0.003;
+            }
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+        
+        function updateThreeDColor() {
+            if (object && object.material) {
+                // Liest die aktuelle Akzentfarbe aus den CSS-Variablen
+                const accentColorStyle = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+                object.material.color.set(accentColorStyle);
+            }
+        }
+        
+        // --- DOM START ---
 
         document.addEventListener('DOMContentLoaded', () => {
              // 1. Initialisiere globale Variablen
@@ -291,7 +371,13 @@
                 });
             }
 
-            // Lade das gespeicherte Thema direkt
+            // NEU: Initialisiere Three.js und starte die Animation
+            initThree();
+            // WICHTIG: Rufe onWindowResize manuell auf, um die korrekten Abmessungen zu erzwingen
+            onWindowResize(); 
+            animateThree(); 
+
+            // Lade das gespeicherte Thema direkt (ruft applyTheme auf, welches die 3D-Farbe aktualisiert)
             loadTheme();
             // Rufe die Begrüßungsfunktion auf, nachdem das Theme geladen wurde
             updateGreeting(); 
@@ -334,6 +420,7 @@
             });
             
             // Füge Event-Listener zu den Theme-Buttons im Panel hinzu
+            // applyTheme wird aufgerufen, was updateThreeDColor() enthält.
             document.getElementById('set-light').onclick = () => applyTheme('light');
             document.getElementById('set-dark').onclick = () => applyTheme('dark');
             document.getElementById('set-vibrant').onclick = () => applyTheme('vibrant');
@@ -368,14 +455,11 @@
         <!-- Die 12 Kacheln werden hier per JavaScript eingefügt -->
     </div>
     
-    <!-- Optionaler Platzhalter, um den Inhalt über die Welle zu schieben -->
-    <div class="h-32 w-full relative z-10"></div> 
+    <!-- Optionaler Platzhalter, um den Inhalt über die 3D-Animation zu schieben -->
+    <div class="h-36 w-full relative z-10"></div> 
 
     <!-- --- ANIMATIONS-CONTAINER (HINTERGRUND) --- -->
-    <div id="cool-animation">
-        <div class="wave"></div>
-        <div class="wave layer2"></div>
-    </div>
+    <canvas id="three-canvas"></canvas>
     
     <!-- --- EINSTELLUNGS-PANEL / BURGER MENÜ --- -->
     
