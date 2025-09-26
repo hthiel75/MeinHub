@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine iPhone Startseite</title>
+    <!-- Lade Tailwind CSS für modernes, responsives Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Setze die Schriftart auf Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Flex-Container für vertikalen Fluss und Zentrierung */
+            min-height: 100vh;
+            transition: background-color 0.3s ease;
+            /* Standard-Fallbacks, falls JavaScript das Laden des Themas verzögert */
+            background-color: var(--bg-color, #f0f3f8);
+        }
+
+        /* --- THEMEN DEFINITIONEN MIT CSS VARIABLEN --- */
+        
+        /* Light Mode (Standard) */
+        :root, .theme-light {
+            --bg-color: #f0f3f8;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #1f2937; /* Grau-800 */
+            --accent-color: #3B82F6; /* Blau-500 */
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --border-color: rgba(220, 220, 220, 0.7);
+        }
+
+        /* Dark Mode */
+        .theme-dark {
+            --bg-color: #030712; /* Grau-950 */
+            --card-bg: rgba(31, 41, 55, 0.85); /* Grau-800 mit Transparenz */
+            --text-color: #f9fafb; /* Grau-50 */
+            --accent-color: #60A5FA; /* Blau-400 */
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --border-color: rgba(55, 65, 81, 0.7);
+        }
+        
+        /* Teal Vibe (Vibrant Mode) */
+        .theme-vibrant {
+            --bg-color: #e0f2f1; /* Heller Mint/Cyan-Ton, der sich klar abhebt (Teal-50) */
+            --card-bg: rgba(255, 255, 255, 0.95); /* Karten bleiben sehr hell */
+            --text-color: #047876; /* Dunkles Teal für Lesbarkeit */
+            --accent-color: #2dd4bf; /* Leuchtendes Cyan-300 für Akzente */
+            --shadow-color: rgba(45, 212, 191, 0.3); /* Teal Schatten */
+            --border-color: rgba(45, 212, 191, 0.7);
+        }
+
+
+        /* --- GLOBALE STILE (WENDEN VARIABLEN AN) --- */
+
+        /* Spezieller Stil für die Burger-Menü-Kachel, da sie nicht Teil des Grids ist */
+        .settings-card {
+             background-color: var(--card-bg);
+             color: var(--text-color);
+        }
+        
+        .link-card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* WICHTIG: Verwende :active für die Reaktion beim Antippen auf dem iPhone */
+        .link-card:active, .link-card:hover {
+            transform: scale(1.05);
+            /* Stärkerer Glow beim Antippen / Hover */
+            box-shadow: 0 0 20px var(--accent-color); 
+            border-color: var(--accent-color); 
+        }
+
+        /* Stellt sicher, dass das 4x3 Gitter zentriert ist und den verfügbaren Platz gut nutzt */
+        .grid-container {
+            max-width: 500px;
+            width: 95%; 
+        }
+
+        /* Stil für das Einstellungs-Panel (das Burger-Menü) */
+        #settings-panel {
+            top: 0;
+            right: -100%; /* Startposition: außerhalb des Bildschirms */
+            transition: right 0.3s ease-in-out;
+            z-index: 50; /* Über dem Rest der Seite */
+            height: 100vh;
+        }
+
+        #settings-panel.open {
+            right: 0; /* Endposition: auf dem Bildschirm */
+        }
+        
+        .theme-btn {
+            transition: all 0.2s;
+        }
+        .theme-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* --- ANIMATION: LIQUID WAVE AM UNTEREN RAND --- */
+        #cool-animation {
+            position: fixed; 
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px; /* Sichtbare Höhe */
+            overflow: hidden;
+            z-index: 0; /* Hinter allen Inhalten */
+            pointer-events: none; /* Macht es nicht klickbar */
+        }
+
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            bottom: -50px; /* Startpunkt unterhalb der Sichtlinie */
+            left: -50%;
+            background: var(--accent-color); /* Nutzt Akzentfarbe des Themas */
+            opacity: 0.15; /* Sehr subtil */
+            /* Erzeugt eine unregelmäßige, wellenförmige Kurve */
+            border-radius: 40% 50% 30% 60% / 100% 100% 100% 100%; 
+            animation: waveAnimation 15s linear infinite;
+            transform: translate3d(0, 0, 0); 
+        }
+
+        .wave.layer2 {
+            opacity: 0.1;
+            /* Bewegt sich langsamer und in umgekehrter Richtung */
+            animation: waveAnimation 20s linear infinite reverse; 
+            transform: scale(1.1) rotate(1deg);
+        }
+        
+        @keyframes waveAnimation {
+            0% { transform: translateX(0) translateZ(0) scaleY(1); }
+            50% { transform: translateX(-25%) translateZ(0) scaleY(0.9); }
+            100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+        }
+
+    </style>
+    <script>
+        // Funktion zum Öffnen der Links
+        function openLink(url) {
+            window.location.href = url;
+        }
+        
+        // Funktion zum Generieren der Favicon-URL (unter Verwendung des Google S2-Dienstes)
+        function getFaviconUrl(domain) {
+            // Generiert eine 64x64 Favicon-URL für die angegebene Domain
+            return `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+        }
+
+        // Definieren Sie Ihre 12 Links (4x3 Raster) mit Domänen für Favicons
+        const links = [
+            // Alle Links verwenden nun die Domain, um das Favicon zu laden.
+            { name: "Uhr Forum", domain: "uhrforum.de", url: "https://uhrforum.de/" },
+            { name: "HNA", domain: "hna.de", url: "https://www.hna.de/" },
+            { name: "Bild.de", domain: "bild.de", url: "https://www.bild.de/" },
+            { name: "Facebook", domain: "fb.com", url: "https://fb.com" },
+            { name: "Tagesschau", domain: "tagesschau.de", url: "https://www.tagesschau.de/" },
+            { name: "ChinaHandys", domain: "smartzone.de", url: "https://www.smartzone.de/" },
+            { name: "Cachys Blog", domain: "stadt-bremerhaven.de", url: "https://stadt-bremerhaven.de/" },
+            { name: "IPhone Ticker", domain: "iphone-ticker.de", url: "https://www.iphone-ticker.de/" },
+            { name: "Golem", domain: "golem.de", url: "https://www.golem.de/" },
+            { name: "Archive.is", domain: "archive.is", url: "https://archive.is/" },
+            { name: "Google Watchblog", domain: "googlewatchblog.de", url: "https://www.googlewatchblog.de/" },
+            { name: "Born IT", domain: "borncity.com", url: "https://www.borncity.com/blog/" }
+        ];
+
+        // --- THEME SWITCHING LOGIC ---
+
+        const THEME_KEY = 'userTheme';
+        
+        // Deklaration der globalen Variablen, die die DOM-Elemente halten werden
+        let overlay;
+        let panel;
+
+        // toggleSettingsPanel als gehostete Funktion deklarieren
+        function toggleSettingsPanel(forceState) {
+            // Sicherheitscheck, falls der Aufruf vor DOMContentLoaded geschieht
+            if (!panel || !overlay) return; 
+            
+            const isOpen = panel.classList.contains('open');
+            let newState;
+            
+            if (forceState !== undefined) {
+                newState = forceState;
+            } else {
+                newState = !isOpen;
+            }
+
+            if (newState) {
+                overlay.style.display = 'block';
+                // Kurze Verzögerung für sauberen Fade-Effekt
+                setTimeout(() => overlay.style.opacity = '1', 10);
+                panel.classList.add('open');
+            } else {
+                overlay.style.opacity = '0';
+                panel.classList.remove('open');
+                // Das 'display: none' wird im 'transitionend' Event gesetzt
+            }
+        }
+        
+        function applyTheme(themeName) {
+            const body = document.body;
+            // Entferne alle existierenden Theme-Klassen
+            body.classList.remove('theme-light', 'theme-dark', 'theme-vibrant');
+            
+            if (themeName && themeName !== 'light') {
+                body.classList.add(`theme-${themeName}`);
+            }
+            
+            // Speichere die Auswahl
+            localStorage.setItem(THEME_KEY, themeName);
+            
+            // Aktualisiere den Button-Status im Panel (optional)
+            updatePanelActiveButton(themeName);
+            
+            // Schließe das Menü nach der Auswahl
+            toggleSettingsPanel(false); 
+            
+            // Aktualisiere die Begrüßung nach dem Theme-Wechsel
+            updateGreeting();
+        }
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+            applyTheme(savedTheme);
+        }
+        
+        function updatePanelActiveButton(currentTheme) {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-offset-2');
+                if (btn.dataset.theme === currentTheme) {
+                    // Verwende CSS-Variable für den Ring, um zur Akzentfarbe des Themas zu passen
+                    btn.style.setProperty('border', `2px solid var(--accent-color)`);
+                    btn.classList.add('ring-4', 'ring-offset-2');
+                } else {
+                    btn.style.setProperty('border', `2px solid #e5e7eb`); // Standard Border
+                }
+            });
+        }
+        
+        // --- DYNAMISCHE BEGRÜSSUNGS-LOGIK ---
+        function updateGreeting() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greetingText;
+
+            if (hour >= 0 && hour < 10) {
+                greetingText = "Guten Morgen";
+            } else if (hour >= 19 && hour <= 23) {
+                greetingText = "Guten Abend";
+            } else {
+                // hour >= 10 and hour < 19
+                greetingText = "Guten Tag";
+            }
+
+            const greetingElement = document.getElementById('dynamic-greeting');
+            const name = "Heiko"; 
+            const fullGreeting = `Hallo ${name}, ${greetingText}!`;
+            
+            if (greetingElement) {
+                // Setze die Textfarbe über die CSS-Variable
+                greetingElement.innerHTML = `
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight" style="color: var(--text-color);">
+                        ${fullGreeting}
+                    </h1>
+                `;
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // 1. Initialisiere globale Variablen
+            overlay = document.getElementById('settings-overlay');
+            panel = document.getElementById('settings-panel');
+
+            // Füge Event Listener hier hinzu
+            if (panel) {
+                panel.addEventListener('transitionend', () => {
+                    if (!panel.classList.contains('open')) {
+                         if (overlay) overlay.style.display = 'none';
+                    }
+                });
+            }
+
+            // Lade das gespeicherte Thema direkt
+            loadTheme();
+            // Rufe die Begrüßungsfunktion auf, nachdem das Theme geladen wurde
+            updateGreeting(); 
+            
+            const grid = document.getElementById('link-grid');
+            
+            links.forEach(link => {
+                const card = document.createElement('div');
+                card.className = 'link-card flex flex-col items-center justify-center p-2 rounded-3xl cursor-pointer aspect-square z-10 relative';
+                
+                // Füge das normale Klick-Verhalten hinzu (alle 12 Links öffnen URLs)
+                card.onclick = () => openLink(link.url);
+                
+                // --- Favicon Implementierung ---
+                const iconContainer = document.createElement('div');
+                iconContainer.className = 'flex items-center justify-center w-full h-10 mb-1'; // Container für Zentrierung
+                
+                const favicon = document.createElement('img');
+                // Definiere die Größe für das Favicon
+                favicon.className = 'w-8 h-8 rounded-lg shadow-sm'; 
+                favicon.src = getFaviconUrl(link.domain);
+                favicon.alt = `${link.name} Favicon`;
+                
+                // Fallback, falls das Favicon nicht geladen werden kann
+                favicon.onerror = function() {
+                    this.onerror = null; 
+                    this.src = 'https://placehold.co/32x32/cccccc/ffffff?text=?';
+                };
+
+                iconContainer.appendChild(favicon);
+                
+                // Name (Text)
+                const name = document.createElement('div');
+                name.className = 'font-semibold text-xs sm:text-sm text-center'; 
+                name.textContent = link.name;
+                
+                card.appendChild(iconContainer);
+                card.appendChild(name);
+                grid.appendChild(card);
+            });
+            
+            // Füge Event-Listener zu den Theme-Buttons im Panel hinzu
+            document.getElementById('set-light').onclick = () => applyTheme('light');
+            document.getElementById('set-dark').onclick = () => applyTheme('dark');
+            document.getElementById('set-vibrant').onclick = () => applyTheme('vibrant');
+            
+            // Aktualisiere den aktiven Button beim Laden
+            updatePanelActiveButton(localStorage.getItem(THEME_KEY) || 'light');
+        });
+        
+    </script>
+</head>
+<body class="flex flex-col items-center p-4 relative min-h-screen">
+    
+    <!-- NEUER DEDIZIERTER EINSTELLUNGS-BUTTON (oben rechts fixiert) -->
+    <div class="fixed top-4 right-4 z-30">
+        <button onclick="toggleSettingsPanel(true)" 
+                class="settings-card p-3 rounded-full shadow-lg border border-gray-200 hover:bg-opacity-90 active:scale-95 transition">
+            <!-- SVG Icon für Einstellungen (Zahnrad) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.82 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.82 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.82-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.82-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Dynamische Begrüßung (Heiko) -->
+    <div id="dynamic-greeting" class="w-full text-center mt-16 mb-6 max-w-md relative z-10">
+        <!-- Der Text wird von JavaScript eingefügt -->
+    </div>
+
+    <!-- Haupt-Container für das Gitter (12 Links) -->
+    <div id="link-grid" class="grid-container grid grid-cols-4 gap-4 md:gap-6 relative z-10">
+        <!-- Die 12 Kacheln werden hier per JavaScript eingefügt -->
+    </div>
+    
+    <!-- Optionaler Platzhalter, um den Inhalt über die Welle zu schieben -->
+    <div class="h-32 w-full relative z-10"></div> 
+
+    <!-- --- ANIMATIONS-CONTAINER (HINTERGRUND) --- -->
+    <div id="cool-animation">
+        <div class="wave"></div>
+        <div class="wave layer2"></div>
+    </div>
+    
+    <!-- --- EINSTELLUNGS-PANEL / BURGER MENÜ --- -->
+    
+    <!-- Halbdurchsichtiger Hintergrund, der Klicks außerhalb des Panels abfängt -->
+    <div id="settings-overlay" onclick="toggleSettingsPanel(false)" class="fixed inset-0 bg-black bg-opacity-50 transition-opacity z-40 hidden" style="opacity: 0;"></div>
+    
+    <!-- Das eigentliche Einstellungs-Panel (Slider) -->
+    <div id="settings-panel" class="settings-card fixed w-full max-w-xs p-6 rounded-l-3xl shadow-2xl flex flex-col justify-start items-start">
+        
+        <div class="w-full flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Design wählen</h2>
+            <!-- Schließen-Button -->
+            <button onclick="toggleSettingsPanel(false)" class="p-2 text-2xl font-bold rounded-full hover:bg-gray-100 active:scale-90">
+                &times;
+            </button>
+        </div>
+
+        <p class="text-sm mb-4 text-gray-500">Wählen Sie eines von drei dynamischen Designs.</p>
+
+        <!-- Theme Auswahl Buttons -->
+        <div class="w-full space-y-4">
+            
+            <!-- Light Mode Button -->
+            <button data-theme="light" id="set-light" class="theme-btn w-full flex items-center p-3 rounded-xl bg-gray-50 border border-gray-200 hover:shadow-md transition">
+                <span class="text-2xl mr-3">☀️</span>
+                <span class="font-semibold text-gray-800">Light Mode (Hell)</span>
+            </button>
+            
+            <!-- Dark Mode Button -->
+            <button data-theme="dark" id="set-dark" class="theme-btn w-full flex items-center p-3 rounded-xl bg-gray-800 border border-gray-700 hover:shadow-md transition">
+                <span class="text-2xl mr-3">🌑</span>
+                <span class="font-semibold text-gray-50">Dark Mode (Dunkel)</span>
+            </button>
+
+            <!-- Vibrant Mode Button -->
+            <button data-theme="vibrant" id="set-vibrant" class="theme-btn w-full flex items-center p-3 rounded-xl bg-teal-50 border border-teal-200 hover:shadow-md transition">
+                <span class="text-2xl mr-3">🌊</span>
+                <span class="font-semibold text-teal-700">Teal Vibe (Vibrant)</span>
+            </button>
+            
+        </div>
+
+    </div>
+    
+</body>
+</html>
