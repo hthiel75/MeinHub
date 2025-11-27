@@ -1,686 +1,703 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DASHBOARD</title>
-    <!-- Google Fonts: Poppins für ein klares, modernes Schriftbild -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Dashboard</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              bg: 'var(--bg-color)',
+              text: 'var(--text-color)',
+              accent: 'var(--main-accent-color)',
+              secondary: 'var(--secondary-accent-color)',
+              card: 'var(--card-bg)',
+              border: 'var(--card-border)',
+            },
+            boxShadow: {
+              glass: 'var(--shadow-primary)',
+              glassHover: 'var(--shadow-hover)',
+            },
+            borderRadius: {
+              theme: 'var(--card-radius)',
+            },
+            keyframes: {
+                'fade-in-down': {
+                    '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                }
+            },
+            animation: {
+                'fade-in-down': 'fade-in-down 0.8s ease-out',
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Styles -->
     <style>
-        /* ========================================================== */
-        /* Design-Variablen und Stile                                 */
-        /* ========================================================== */
-        :root {
-            /* Monolith-Modus (Standard) */
-            --bg-color: #1a1b26;
-            --text-color: #e0e6ef;
-            --main-accent-color: #e38a2e;
-            --secondary-accent-color: #6a6a99;
-            --card-bg: rgba(45, 46, 59, 0.6);
-            --card-border: rgba(90, 91, 115, 0.4);
-            --shadow-primary: 0 4px 15px rgba(0, 0, 0, 0.3);
-            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.5);
-            --card-radius: 20px;
-        }
-
-        /* Apple-Stil-Modus (Heller, minimalistischer Stil) */
-        body.apple-style-mode {
-            --bg-color: #f5f5f7;
-            --text-color: #1d1d1f;
-            --main-accent-color: #007aff;
-            --secondary-accent-color: #8e8e93;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --card-border: rgba(200, 200, 200, 0.5);
-            --shadow-primary: 0 4px 16px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.1);
-            --card-radius: 12px;
-        }
-
-        /* NEU: Cyberpunk-Modus */
-        body.cyberpunk-mode {
-            --bg-color: #120f26;
-            --text-color: #c7f2ff;
-            --main-accent-color: #ff00ff;
-            --secondary-accent-color: #00ffff;
-            --card-bg: rgba(25, 20, 50, 0.7);
-            --card-border: rgba(50, 40, 100, 0.5);
-            --shadow-primary: 0 4px 15px rgba(0, 255, 255, 0.2);
-            --shadow-hover: 0 8px 30px rgba(255, 0, 255, 0.4);
-            --card-radius: 10px;
-        }
-        
-        /* NEU: Minimalist-Dunkel-Modus */
-        body.minimalist-dark-mode {
-            --bg-color: #2c2c34;
-            --text-color: #ededed;
-            --main-accent-color: #4a90e2;
-            --secondary-accent-color: #a0a0aa;
-            --card-bg: rgba(50, 50, 60, 0.7);
-            --card-border: rgba(70, 70, 80, 0.5);
-            --shadow-primary: 0 4px 12px rgba(0, 0, 0, 0.2);
-            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.3);
-            --card-radius: 15px;
-        }
-
-        /* NEU: High-Contrast-Modus */
-        body.high-contrast-mode {
-            --bg-color: #000000;
-            --text-color: #ffffff;
-            --main-accent-color: #ffffff;
-            --secondary-accent-color: #cccccc;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.2);
-            --shadow-primary: none;
-            --shadow-hover: 0 0 15px rgba(255, 255, 255, 0.5);
-            --card-radius: 5px;
-        }
-
-
-        /* Globale Basisstile */
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem 1rem;
-            box-sizing: border-box;
-            transition: background-color 0.5s ease;
-        }
-
-        /* ========================================================== */
-        /* Layout-Container                                           */
-        /* ========================================================== */
-        .dashboard-container {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        /* ========================================================== */
-        /* Burger-Menü & Header                                       */
-        /* ========================================================== */
-        .menu-container {
-            position: fixed;
-            top: 1.5rem;
-            left: 1.5rem;
-            z-index: 1000;
-        }
-
-        .menu-toggle {
-            width: 30px;
-            height: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            display: block;
-            width: 100%;
-            height: 3px;
-            background-color: var(--text-color);
-            border-radius: 5px;
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease;
-        }
-        
-        .menu-toggle.open span:nth-child(1) { transform: translateY(11px) rotate(45deg); }
-        .menu-toggle.open span:nth-child(2) { opacity: 0; }
-        .menu-toggle.open span:nth-child(3) { transform: translateY(-11px) rotate(-45deg); }
-
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-            z-index: 999;
-        }
-
-        .menu-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .menu-content {
-            position: absolute;
-            top: 5rem;
-            left: 1.5rem;
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            border: 1px solid var(--card-border);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .menu-option {
-            padding: 0.75rem 1.25rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.2s ease;
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        .menu-option:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.02);
-        }
-
-        .main-info {
-            text-align: center;
-        }
-
-        .main-info h1 {
-            font-size: clamp(1.8rem, 4vw, 3rem);
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        body.apple-style-mode .main-info h1 {
-            text-shadow: none;
-        }
-
-        /* ========================================================== */
-        /* Kachel-Raster - NOCH KLEINER UND KOMPAKTER                      */
-        /* ========================================================== */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 1rem;
-            width: 100%;
-        }
-        
-        @media (min-width: 768px) {
-            .grid-container {
-                grid-template-columns: repeat(6, 1fr);
-                gap: 1.5rem;
-            }
-        }
-        @media (min-width: 1024px) {
-            .grid-container {
-                gap: 2rem;
-            }
-        }
-
-        .tile {
-            position: relative;
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--card-border);
-            box-shadow: var(--shadow-primary);
-            aspect-ratio: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .tile:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        body.apple-style-mode .tile:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-            background: rgba(255, 255, 255, 0.9);
-        }
-        body.cyberpunk-mode .tile:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px var(--main-accent-color);
-            background: rgba(255, 0, 255, 0.1);
-        }
-        body.minimalist-dark-mode .tile:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
-            background: rgba(70, 70, 80, 0.8);
-        }
-        body.high-contrast-mode .tile:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .tile .icon {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            margin-bottom: 2px;
-            line-height: 1;
-        }
-
-        .tile .text {
-            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
-            font-weight: 500;
-            line-height: 1.2;
-            text-transform: none;
-            opacity: 0.9;
-        }
-        
-        /* ========================================================== */
-        /* Suche, Uhr & Animation - am unteren Rand platziert        */
-        /* ========================================================== */
-        .bottom-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem; /* Abstand mobil verringert */
-            margin-top: 2rem;
-        }
-
-        @media (min-width: 768px) {
-            .bottom-container {
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                gap: 0; /* Abstand horizontal auf 0 gesetzt */
-            }
-        }
-
-        .search-container {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .search-box {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            border: 1px solid var(--card-border);
-            box-shadow: var(--shadow-primary);
-            display: flex;
-            overflow: hidden;
-            width: 100%;
-            backdrop-filter: blur(10px);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .search-box:focus-within {
-            box-shadow: 0 0 0 2px var(--main-accent-color);
-        }
-
-        .search-input {
-            flex-grow: 1;
-            padding: 0.7rem 0.9rem;
-            font-size: 0.9rem;
-            border: none;
-            background: transparent;
-            color: var(--text-color);
-            outline: none;
-            font-weight: 400;
-        }
-
-        .search-input::placeholder {
-            color: var(--secondary-accent-color);
-            opacity: 0.7;
-        }
-        
-        .search-button {
-            padding: 0.7rem 1.1rem;
-            font-size: 0.9rem;
-            border: none;
-            background: var(--main-accent-color);
-            color: var(--bg-color);
-            cursor: pointer;
-            transition: background 0.3s ease;
-            font-weight: 600;
-        }
-
-        .search-button:hover {
-            filter: brightness(1.2);
-        }
-
-        .digital-clock {
-            font-size: clamp(1rem, 2.5vw, 2rem);
-            font-weight: 300;
-            letter-spacing: -1px;
-            color: var(--main-accent-color);
-            transition: color 0.4s ease;
-            text-align: center;
-        }
-
-        .date {
-            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
-            font-weight: 400;
-            opacity: 0.7;
-            margin-top: -0.2rem;
-            text-align: center;
-        }
-
-        .animation-container {
-            width: clamp(80px, 12vw, 150px);
-            aspect-ratio: 1 / 1;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        
-        .animation-container:hover {
-            transform: scale(1.05);
-        }
-
-        #animation-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        
-        /* Neue Styles für die schwebende Schaltfläche */
-        .floating-button {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            background-color: var(--main-accent-color);
-            color: var(--bg-color);
-            border: none;
-            border-radius: 50px;
-            box-shadow: var(--shadow-primary);
-            font-family: 'Poppins', sans-serif;
-            font-size: 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            z-index: 1000;
-        }
-
-        .floating-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-        @media (max-width: 768px) {
-            .floating-button {
-                bottom: 1rem;
-                right: 1rem;
-            }
-        }
-
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.8); }
     </style>
+
+    <!-- Import Map -->
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.2.0?external=react",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?external=react",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.16.8?external=react,react-dom,three",
+    "three": "https://esm.sh/three@0.165.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.395.0?external=react",
+    "@babel/standalone": "https://unpkg.com/@babel/standalone/babel.min.js",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
-    <div class="menu-container">
-        <div class="menu-toggle" id="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-    
-    <div class="menu-overlay" id="menu-overlay">
-        <div class="menu-content">
-            <div class="menu-option" data-theme="monolith-mode">Monolith</div>
-            <div class="menu-option" data-theme="apple-style-mode">Apple Stil</div>
-            <div class="menu-option" data-theme="cyberpunk-mode">Cyberpunk</div>
-            <div class="menu-option" data-theme="minimalist-dark-mode">Minimalistisch</div>
-            <div class="menu-option" data-theme="high-contrast-mode">High Contrast</div>
-        </div>
-    </div>
+    <div id="root"></div>
 
-    <main class="dashboard-container">
-        <header class="main-info">
-            <h1 id="greeting-title"></h1>
-        </header>
-        
-        <section class="grid-container">
-            <a href="https://www.icloud.com/mail/" target="_blank" class="tile"><div class="icon">📧</div><div class="text">iCloud Mail</div></a>
-            <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="tile"><div class="icon">📨</div><div class="text">Gmail</div></a>
-            <a href="https://eckdde.sharepoint.com/sites/Startseite-Intranet" target="_blank" class="tile"><div class="icon">🏢</div><div class="text">Intranet</div></a>
-            <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile"><div class="icon">📖</div><div class="text">Wiki</div></a>
-            <a href="https://login.hrworks.de/?companyId=eckd&directssologin=true" target="_blank" class="tile"><div class="icon">👔</div><div class="text">HR Works</div></a>
-            <a href="https://apps.churchx.de/itm-kiris-eckd-prod" target="_blank" class="tile"><div class="icon">⛪</div><div class="text">Kiris</div></a>
-            <a href="https://chat.openai.com/" target="_blank" class="tile"><div class="icon">🤖</div><div class="text">ChatGPT</div></a>
-            <a href="https://gemini.google.com/?hl=de" target="_blank" class="tile"><div class="icon">✨</div><div class="text">Gemini</div></a>
-            <a href="https://m365.cloud.microsoft:443/chat/?titleId=T_82714181-8fcd-715b-fe7b-98ba417f56d0&source=embedded-builder" target="_blank" class="tile"><div class="icon">💼</div><div class="text">Copilot</div></a>
-            <a href="https://news.google.com/" target="_blank" class="tile"><div class="icon">📰</div><div class="text">Google News</div></a>
-            <a href="https://ekkw.cloud.com" target="_blank" class="tile"><div class="icon">☁️</div><div class="text">EKKW Cloud</div></a>
-            <a href="https://www.bild.de/" target="_blank" class="tile"><div class="icon">📰</div><div class="text">Bild.de</div></a>
-        </section>
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useRef, useMemo } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { Canvas, useFrame } from '@react-three/fiber';
+        import * as THREE from 'three';
+        import { 
+          Menu, Search, X, Dice5, 
+          Mail, Building2, BookOpen, Briefcase, 
+          Cross, Bot, Sparkles, Zap, Newspaper, Cloud, Globe 
+        } from 'lucide-react';
 
-        <div class="bottom-container">
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" id="search-input" class="search-input" placeholder="Google durchsuchen">
-                    <button id="search-button" class="search-button">Suchen</button>
-                </div>
-            </div>
-            <div class="animation-container" id="animation-container">
-                <canvas id="animation-canvas"></canvas>
-            </div>
-            <div>
-                <div class="digital-clock" id="clock-display"></div>
-                <div class="date" id="date-display"></div>
-            </div>
-        </div>
-    </main>
-    
-    <button id="change-shape-button" class="floating-button">🎲</button>
+        // --- CONSTANTS & TYPES ---
 
-    <!-- Three.js Bibliothek -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initDashboard();
-        });
-
-        const ELEMENTS = {
-            greetingTitle: document.getElementById('greeting-title'),
-            clockDisplay: document.getElementById('clock-display'),
-            dateDisplay: document.getElementById('date-display'),
-            searchInput: document.getElementById('search-input'),
-            searchButton: document.getElementById('search-button'),
-            menuToggle: document.getElementById('menu-toggle'),
-            menuOverlay: document.getElementById('menu-overlay'),
-            menuOptions: document.querySelectorAll('.menu-option'),
-            animationContainer: document.getElementById('animation-container'),
-            animationCanvas: document.getElementById('animation-canvas'),
-            changeShapeButton: document.getElementById('change-shape-button')
-        };
-
-        let isFastSpinning = false;
-        let scene, camera, renderer, mesh;
-        let currentGeometryIndex = 0;
-        const geometries = [
-            new THREE.IcosahedronGeometry(1.5, 0),
-            new THREE.BoxGeometry(2, 2, 2),
-            new THREE.TorusGeometry(1.5, 0.5, 16, 100),
-            new THREE.SphereGeometry(1.5, 32, 32),
-            new THREE.ConeGeometry(1.5, 3, 32)
+        const THEMES = [
+          {
+            id: 'monolith',
+            name: 'Monolith',
+            vars: {
+              '--bg-color': '#1a1b26',
+              '--text-color': '#e0e6ef',
+              '--main-accent-color': '#e38a2e',
+              '--secondary-accent-color': '#6a6a99',
+              '--card-bg': 'rgba(45, 46, 59, 0.6)',
+              '--card-border': 'rgba(90, 91, 115, 0.4)',
+              '--shadow-primary': '0 4px 15px rgba(0, 0, 0, 0.3)',
+              '--shadow-hover': '0 8px 30px rgba(0, 0, 0, 0.5)',
+              '--card-radius': '20px',
+            },
+          },
+          {
+            id: 'apple',
+            name: 'Apple Style',
+            vars: {
+              '--bg-color': '#f5f5f7',
+              '--text-color': '#1d1d1f',
+              '--main-accent-color': '#007aff',
+              '--secondary-accent-color': '#8e8e93',
+              '--card-bg': 'rgba(255, 255, 255, 0.7)',
+              '--card-border': 'rgba(200, 200, 200, 0.5)',
+              '--shadow-primary': '0 4px 16px rgba(0, 0, 0, 0.05)',
+              '--shadow-hover': '0 8px 25px rgba(0, 0, 0, 0.1)',
+              '--card-radius': '12px',
+            },
+          },
+          {
+            id: 'cyberpunk',
+            name: 'Cyberpunk',
+            vars: {
+              '--bg-color': '#120f26',
+              '--text-color': '#c7f2ff',
+              '--main-accent-color': '#ff00ff',
+              '--secondary-accent-color': '#00ffff',
+              '--card-bg': 'rgba(25, 20, 50, 0.7)',
+              '--card-border': 'rgba(50, 40, 100, 0.5)',
+              '--shadow-primary': '0 4px 15px rgba(0, 255, 255, 0.2)',
+              '--shadow-hover': '0 0 30px rgba(255, 0, 255, 0.4)',
+              '--card-radius': '4px',
+            },
+          },
+          {
+            id: 'minimalist',
+            name: 'Minimalist Dark',
+            vars: {
+              '--bg-color': '#2c2c34',
+              '--text-color': '#ededed',
+              '--main-accent-color': '#4a90e2',
+              '--secondary-accent-color': '#a0a0aa',
+              '--card-bg': 'rgba(50, 50, 60, 0.7)',
+              '--card-border': 'rgba(70, 70, 80, 0.5)',
+              '--shadow-primary': '0 4px 12px rgba(0, 0, 0, 0.2)',
+              '--shadow-hover': '0 8px 20px rgba(0, 0, 0, 0.3)',
+              '--card-radius': '15px',
+            },
+          },
+          {
+            id: 'high-contrast',
+            name: 'High Contrast',
+            vars: {
+              '--bg-color': '#000000',
+              '--text-color': '#ffffff',
+              '--main-accent-color': '#ffffff',
+              '--secondary-accent-color': '#cccccc',
+              '--card-bg': 'rgba(255, 255, 255, 0.1)',
+              '--card-border': 'rgba(255, 255, 255, 1)',
+              '--shadow-primary': 'none',
+              '--shadow-hover': '0 0 0 2px #ffffff',
+              '--card-radius': '0px',
+            },
+          },
         ];
 
-        function initDashboard() {
-            updateGreeting();
-            updateClock();
-            setInterval(updateClock, 1000);
-            setupEventListeners();
-            initAnimation();
-            animate();
-            loadSavedTheme();
-        }
+        const LINKS = [
+          { id: '1', title: 'iCloud Mail', url: 'https://www.icloud.com/mail/', icon: Mail },
+          { id: '2', title: 'Gmail', url: 'https://mail.google.com/mail/u/0/#inbox', icon: Mail, color: '#EA4335' },
+          { id: '3', title: 'Intranet', url: 'https://eckdde.sharepoint.com/sites/Startseite-Intranet', icon: Building2 },
+          { id: '4', title: 'Wiki', url: 'https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde', icon: BookOpen },
+          { id: '5', title: 'HR Works', url: 'https://login.hrworks.de/?companyId=eckd&directssologin=true', icon: Briefcase },
+          { id: '6', title: 'Kiris', url: 'https://apps.churchx.de/itm-kiris-eckd-prod', icon: Cross },
+          { id: '7', title: 'ChatGPT', url: 'https://chat.openai.com/', icon: Bot, color: '#10A37F' },
+          { id: '8', title: 'Gemini', url: 'https://gemini.google.com/?hl=de', icon: Sparkles, color: '#4E86F4' },
+          { id: '9', title: 'Copilot', url: 'https://m365.cloud.microsoft:443/chat/', icon: Zap },
+          { id: '10', title: 'Google News', url: 'https://news.google.com/', icon: Newspaper },
+          { id: '11', title: 'EKKW Cloud', url: 'https://ekkw.cloud.com', icon: Cloud },
+          { id: '12', title: 'Bild.de', url: 'https://www.bild.de/', icon: Globe },
+        ];
 
-        function updateGreeting() {
-            const hour = new Date().getHours();
-            const timeOfDay = (hour >= 5 && hour < 10) ? 'MORGEN' :
-                              (hour >= 10 && hour < 19) ? 'TAG' : 'ABEND';
-            ELEMENTS.greetingTitle.textContent = `Guten ${timeOfDay}, Heiko!`.toUpperCase();
-        }
+        const ShapeType = {
+          ICOSAHEDRON: 0,
+          BOX: 1,
+          TORUS: 2,
+          SPHERE: 3,
+          CONE: 4,
+        };
 
-        function updateClock() {
-            const now = new Date();
-            const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const date = now.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            ELEMENTS.clockDisplay.textContent = time;
-            ELEMENTS.dateDisplay.textContent = date;
-        }
+        // --- 3D COMPONENTS ---
 
-        function setupEventListeners() {
-            ELEMENTS.searchButton.addEventListener('click', handleSearch);
-            ELEMENTS.searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') handleSearch();
+        // Background Effect
+        const BackgroundParticles = ({ color }) => {
+          const count = 150;
+          const meshRef = useRef(null);
+          
+          const positions = useMemo(() => {
+            const pos = new Float32Array(count * 3);
+            for (let i = 0; i < count; i++) {
+              const r = 4 + Math.random() * 6;
+              const theta = Math.random() * Math.PI * 2;
+              const phi = Math.acos(2 * Math.random() - 1);
+              
+              pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+              pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+              pos[i * 3 + 2] = r * Math.cos(phi);
+            }
+            return pos;
+          }, []);
+
+          useFrame((state, delta) => {
+            if (meshRef.current) {
+              meshRef.current.rotation.y += delta * 0.02;
+              meshRef.current.rotation.x += delta * 0.01;
+              const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.3) * 0.02;
+              meshRef.current.scale.setScalar(pulse);
+            }
+          });
+
+          return (
+            <points ref={meshRef}>
+              <bufferGeometry>
+                <bufferAttribute
+                  attach="attributes-position"
+                  count={count}
+                  array={positions}
+                  itemSize={3}
+                />
+              </bufferGeometry>
+              <pointsMaterial 
+                color={color} 
+                size={0.05} 
+                transparent 
+                opacity={0.2} 
+                sizeAttenuation 
+                blending={THREE.AdditiveBlending}
+              />
+            </points>
+          );
+        };
+
+        const CyberOrb = ({ color }) => {
+          const coreRef = useRef(null);
+          const ringRef = useRef(null);
+
+          useFrame((state) => {
+            if (coreRef.current) {
+              const material = coreRef.current.material;
+              material.emissiveIntensity = 0.6 + Math.sin(state.clock.elapsedTime * 1.5) * 0.15;
+              coreRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 1.5) * 0.02);
+            }
+            if (ringRef.current) {
+              ringRef.current.rotation.z += 0.005;
+              ringRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1 + Math.PI / 2;
+            }
+          });
+
+          return (
+            <group>
+              <mesh>
+                <icosahedronGeometry args={[1.4, 1]} />
+                <meshBasicMaterial color={color} wireframe transparent opacity={0.15} />
+              </mesh>
+              <mesh ref={coreRef}>
+                <icosahedronGeometry args={[0.7, 4]} />
+                <meshStandardMaterial 
+                  color={color} 
+                  emissive={color} 
+                  emissiveIntensity={0.6} 
+                  roughness={0.2} 
+                  metalness={0.8} 
+                />
+              </mesh>
+              <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
+                <torusGeometry args={[1.8, 0.02, 16, 100]} />
+                <meshBasicMaterial color={color} transparent opacity={0.3} />
+              </mesh>
+            </group>
+          );
+        };
+
+        const HyperCube = ({ color }) => {
+          const innerRef = useRef(null);
+          const outerRef = useRef(null);
+
+          useFrame((state, delta) => {
+            if (innerRef.current) {
+              innerRef.current.rotation.x -= delta * 0.8;
+              innerRef.current.rotation.z -= delta * 0.8;
+              const material = innerRef.current.material;
+              material.emissiveIntensity = 0.6 + Math.sin(state.clock.elapsedTime * 1.2) * 0.1;
+            }
+            if (outerRef.current) {
+               const scale = 1 + Math.sin(state.clock.elapsedTime) * 0.01;
+               outerRef.current.scale.setScalar(scale);
+            }
+          });
+
+          return (
+            <group>
+              <mesh ref={outerRef}>
+                <boxGeometry args={[1.8, 1.8, 1.8]} />
+                <meshBasicMaterial color={color} wireframe transparent opacity={0.15} />
+              </mesh>
+              <mesh ref={innerRef}>
+                <octahedronGeometry args={[0.8, 0]} />
+                <meshStandardMaterial 
+                  color={color} 
+                  emissive={color} 
+                  emissiveIntensity={0.6} 
+                  roughness={0.1} 
+                  metalness={0.9} 
+                />
+              </mesh>
+            </group>
+          );
+        };
+
+        const FluxKnot = ({ color }) => {
+          const shellRef = useRef(null);
+
+          useFrame((state, delta) => {
+            if (shellRef.current) {
+              shellRef.current.rotation.z -= delta * 0.2; 
+              const material = shellRef.current.material;
+              material.opacity = 0.12 + Math.sin(state.clock.elapsedTime) * 0.05;
+            }
+          });
+
+          return (
+            <group>
+              <mesh>
+                <torusKnotGeometry args={[0.9, 0.25, 128, 16]} />
+                <meshStandardMaterial 
+                  color={color} 
+                  emissive={color}
+                  emissiveIntensity={0.4}
+                  roughness={0.2}
+                  metalness={0.8}
+                />
+              </mesh>
+              <mesh ref={shellRef}>
+                <torusKnotGeometry args={[1.0, 0.28, 128, 16]} />
+                <meshBasicMaterial 
+                  color={color} 
+                  wireframe 
+                  transparent 
+                  opacity={0.1} 
+                  blending={THREE.AdditiveBlending}
+                />
+              </mesh>
+            </group>
+          );
+        };
+
+        const ParticleCloud = ({ color }) => {
+          const count = 400;
+          const pointsRef = useRef(null);
+          
+          const { positions, initialPositions } = useMemo(() => {
+            const pos = new Float32Array(count * 3);
+            for (let i = 0; i < count; i++) {
+              const theta = Math.random() * Math.PI * 2;
+              const phi = Math.acos(2 * Math.random() - 1);
+              const r = 1.2 + Math.random() * 0.5;
+              pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+              pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+              pos[i * 3 + 2] = r * Math.cos(phi);
+            }
+            return { positions: pos, initialPositions: new Float32Array(pos) };
+          }, []);
+
+          useFrame((state) => {
+            if (pointsRef.current) {
+              const time = state.clock.elapsedTime;
+              const positionsAttribute = pointsRef.current.geometry.attributes.position;
+              
+              for (let i = 0; i < count; i++) {
+                const ix = i * 3;
+                const iy = i * 3 + 1;
+                const iz = i * 3 + 2;
+                
+                const factor = 1 + Math.sin(time * 1.0 + i * 0.1) * 0.03;
+                
+                positionsAttribute.setXYZ(
+                  i,
+                  initialPositions[ix] * factor,
+                  initialPositions[iy] * factor,
+                  initialPositions[iz] * factor
+                );
+              }
+              positionsAttribute.needsUpdate = true;
+              pointsRef.current.rotation.y += 0.002;
+            }
+          });
+
+          return (
+            <points ref={pointsRef}>
+              <bufferGeometry>
+                <bufferAttribute
+                  attach="attributes-position"
+                  count={count}
+                  array={positions}
+                  itemSize={3}
+                />
+              </bufferGeometry>
+              <pointsMaterial 
+                color={color} 
+                size={0.05} 
+                transparent 
+                opacity={0.6} 
+                sizeAttenuation 
+                blending={THREE.AdditiveBlending}
+              />
+            </points>
+          );
+        };
+
+        const CrystalSpire = ({ color }) => {
+          const groupRef = useRef(null);
+          
+          useFrame((state) => {
+            if (groupRef.current) {
+               groupRef.current.children.forEach((child) => {
+                 if (child.isMesh && child.material.isMeshStandardMaterial) {
+                    child.material.emissiveIntensity = 0.3 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
+                 }
+               });
+            }
+          });
+
+          return (
+            <group ref={groupRef}>
+              <mesh position={[0, -0.5, 0]}>
+                <coneGeometry args={[1, 2, 4]} />
+                <meshStandardMaterial 
+                  color={color} 
+                  emissive={color}
+                  emissiveIntensity={0.3}
+                  wireframe
+                  transparent
+                  opacity={0.4}
+                />
+              </mesh>
+              <mesh position={[0, 0.5, 0]} rotation={[Math.PI, 0, 0]}>
+                <coneGeometry args={[1, 2, 4]} />
+                <meshStandardMaterial 
+                  color={color} 
+                  emissive={color}
+                  emissiveIntensity={0.3}
+                  wireframe
+                  transparent
+                  opacity={0.4}
+                />
+              </mesh>
+              <mesh>
+                <octahedronGeometry args={[0.5]} />
+                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} />
+              </mesh>
+              <mesh rotation={[Math.PI / 4, 0, 0]}>
+                 <torusGeometry args={[1.5, 0.02, 16, 50]} />
+                 <meshBasicMaterial color={color} transparent opacity={0.2} />
+              </mesh>
+            </group>
+          );
+        };
+
+        const AnimatedShape = ({ shapeIndex, color, isFastSpinning }) => {
+          const groupRef = useRef(null);
+
+          useFrame((state, delta) => {
+            if (groupRef.current) {
+              const speed = isFastSpinning ? 2.5 : 0.3;
+              groupRef.current.rotation.y += delta * speed;
+              groupRef.current.rotation.x += delta * (speed * 0.15); 
+              
+              const t = state.clock.getElapsedTime();
+              groupRef.current.position.y = Math.sin(t * 0.6) * 0.1;
+            }
+          });
+
+          const getShape = () => {
+            switch (shapeIndex) {
+              case ShapeType.ICOSAHEDRON: return <CyberOrb color={color} />;
+              case ShapeType.BOX: return <HyperCube color={color} />;
+              case ShapeType.TORUS: return <FluxKnot color={color} />;
+              case ShapeType.SPHERE: return <ParticleCloud color={color} />;
+              case ShapeType.CONE: return <CrystalSpire color={color} />;
+              default: return <CyberOrb color={color} />;
+            }
+          };
+
+          return (
+            <group ref={groupRef}>
+              {getShape()}
+            </group>
+          );
+        };
+
+        const Scene3D = ({ shapeIndex, accentColor, isFastSpinning, onClick }) => {
+          return (
+            <div 
+              className="w-[140px] h-[140px] cursor-pointer hover:scale-110 transition-transform duration-500 ease-out"
+              onClick={onClick}
+              title="Click to toggle speed"
+            >
+              <Canvas camera={{ position: [0, 0, 4.5], fov: 45 }}>
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} intensity={1.2} />
+                <pointLight position={[-10, -10, -10]} intensity={0.5} color={accentColor} />
+                <BackgroundParticles color={accentColor} />
+                <AnimatedShape 
+                  shapeIndex={shapeIndex} 
+                  color={accentColor} 
+                  isFastSpinning={isFastSpinning} 
+                />
+              </Canvas>
+            </div>
+          );
+        };
+
+        // --- APP COMPONENT ---
+
+        const App = () => {
+          const [currentThemeId, setCurrentThemeId] = useState(() => localStorage.getItem('theme') || 'monolith');
+          const [shapeIndex, setShapeIndex] = useState(() => parseInt(localStorage.getItem('shape') || '0', 10));
+          const [isMenuOpen, setIsMenuOpen] = useState(false);
+          const [searchQuery, setSearchQuery] = useState('');
+          const [currentTime, setCurrentTime] = useState(new Date());
+          const [isFastSpinning, setIsFastSpinning] = useState(false);
+
+          const currentTheme = useMemo(() => THEMES.find(t => t.id === currentThemeId) || THEMES[0], [currentThemeId]);
+          
+          useEffect(() => {
+            const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+            return () => clearInterval(timer);
+          }, []);
+
+          useEffect(() => {
+            localStorage.setItem('theme', currentThemeId);
+            Object.entries(currentTheme.vars).forEach(([key, value]) => {
+              document.body.style.setProperty(key, value);
             });
-            ELEMENTS.menuToggle.addEventListener('click', toggleMenu);
-            ELEMENTS.menuOverlay.addEventListener('click', (e) => {
-                if (e.target.classList.contains('menu-overlay')) toggleMenu();
-            });
-            ELEMENTS.menuOptions.forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    applyTheme(e.target.dataset.theme);
-                    toggleMenu();
-                });
-            });
-            ELEMENTS.animationContainer.addEventListener('click', () => {
-                isFastSpinning = !isFastSpinning;
-            });
-            if (ELEMENTS.changeShapeButton) {
-                ELEMENTS.changeShapeButton.addEventListener('click', changeAnimationShape);
+          }, [currentThemeId, currentTheme]);
+
+          useEffect(() => {
+            localStorage.setItem('shape', shapeIndex.toString());
+          }, [shapeIndex]);
+
+          const handleSearch = (e) => {
+            e.preventDefault();
+            if (!searchQuery.trim()) return;
+
+            let url = searchQuery;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+              if (url.includes('.') && !url.includes(' ')) {
+                url = 'https://' + url;
+              } else {
+                url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+              }
             }
-            window.addEventListener('resize', onWindowResize);
-        }
+            window.open(url, '_blank');
+            setSearchQuery('');
+          };
 
-        function handleSearch() {
-            const query = ELEMENTS.searchInput.value;
-            if (query) {
-                // Einfache URL-Erkennung für direkte Navigation
-                let url = query;
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    // Ist es eine Domain?
-                    if (url.includes('.') && !url.includes(' ')) {
-                        url = 'http://' + url;
-                    } else {
-                        // Ansonsten Google-Suche
-                        url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                    }
-                }
-                window.open(url, '_blank');
-                ELEMENTS.searchInput.value = '';
-            }
-        }
-        
-        function toggleMenu() {
-            ELEMENTS.menuToggle.classList.toggle('open');
-            ELEMENTS.menuOverlay.classList.toggle('open');
-        }
+          const toggleShape = () => {
+            setShapeIndex(prev => (prev + 1) % 5);
+          };
 
-        function applyTheme(theme) {
-            document.body.classList.remove('monolith-mode', 'apple-style-mode', 'cyberpunk-mode', 'minimalist-dark-mode', 'high-contrast-mode');
-            document.body.classList.add(theme);
-            localStorage.setItem('theme', theme);
-            updateAnimationColor();
-        }
+          const getGreeting = () => {
+            const hour = currentTime.getHours();
+            let timeOfDay = 'TAG';
+            if (hour >= 5 && hour < 10) timeOfDay = 'MORGEN';
+            else if (hour >= 18) timeOfDay = 'ABEND';
+            return `GUTEN ${timeOfDay}, HEIKO!`;
+          };
 
-        function loadSavedTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'monolith-mode';
-            applyTheme(savedTheme);
-        }
+          return (
+            <div className="min-h-screen w-full bg-bg text-text transition-colors duration-500 ease-in-out font-sans flex flex-col items-center p-6 relative overflow-x-hidden">
+              <div className="fixed inset-0 pointer-events-none bg-bg opacity-90 -z-10" />
 
-        // ==========================================================
-        // Three.js 3D-Animation
-        // ==========================================================
-        function initAnimation() {
-            const container = ELEMENTS.animationContainer;
-            const canvas = ELEMENTS.animationCanvas;
+              <button 
+                onClick={() => setIsMenuOpen(true)}
+                className="fixed top-6 left-6 z-50 p-2 rounded-full hover:bg-white/10 transition-colors text-text"
+              >
+                <Menu size={32} />
+              </button>
 
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            
-            const material = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                emissive: 0x00ffff,
-                roughness: 0.5,
-                metalness: 0.5,
-                flatShading: true
-            });
-            material.emissiveIntensity = 0.5;
+              <div 
+                className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-all duration-300 flex items-start justify-start p-6 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+                onClick={(e) => { if(e.target === e.currentTarget) setIsMenuOpen(false); }}
+              >
+                <div className={`bg-card border border-border rounded-theme p-6 w-72 shadow-glass transform transition-transform duration-300 flex flex-col gap-4 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-xl font-bold">Themes</h2>
+                    <button onClick={() => setIsMenuOpen(false)} className="hover:text-accent transition-colors">
+                      <X size={24} />
+                    </button>
+                  </div>
+                  {THEMES.map(theme => (
+                    <button
+                      key={theme.id}
+                      onClick={() => { setCurrentThemeId(theme.id); setIsMenuOpen(false); }}
+                      className={`text-left px-4 py-3 rounded-lg transition-all font-medium ${currentThemeId === theme.id ? 'bg-accent text-bg' : 'bg-white/5 hover:bg-white/10 hover:translate-x-1'}`}
+                    >
+                      {theme.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-            try {
-                const savedIndex = localStorage.getItem('animationShapeIndex');
-                if (savedIndex !== null) {
-                    currentGeometryIndex = parseInt(savedIndex, 10);
-                }
-            } catch (e) {
-                console.error("Fehler beim Laden der Animationsform:", e);
-            }
-            
-            mesh = new THREE.Mesh(geometries[currentGeometryIndex], material);
-            scene.add(mesh);
-            
-            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-            const pointLight = new THREE.PointLight(0xffffff, 1);
-            pointLight.position.set(5, 5, 5);
-            scene.add(pointLight);
+              <main className="w-full max-w-6xl flex flex-col gap-10 mt-12 mb-24 z-10">
+                <header className="text-center animate-fade-in-down">
+                  <h1 className="text-4xl md:text-6xl font-bold tracking-tight drop-shadow-md">
+                    {getGreeting()}
+                  </h1>
+                </header>
 
-            camera.position.z = 4;
-            updateAnimationColor();
-        }
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 md:gap-6 w-full">
+                  {LINKS.map((link) => (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative flex flex-col items-center justify-center aspect-square bg-card border border-border rounded-theme shadow-glass hover:shadow-glassHover transition-all duration-300 hover:-translate-y-1 backdrop-blur-md overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      <link.icon 
+                        size={40} 
+                        className="mb-3 transition-transform duration-300 group-hover:scale-110 group-hover:text-accent"
+                        color={link.color ? link.color : 'currentColor'}
+                      />
+                      <span className="text-xs md:text-sm font-medium opacity-90 text-center px-2 z-10">
+                        {link.title}
+                      </span>
+                    </a>
+                  ))}
+                </div>
 
-        function animate() {
-            requestAnimationFrame(animate);
-            if (mesh) {
-                // Die Rotationsgeschwindigkeit der Animation wurde hier erhöht.
-                const rotationSpeed = isFastSpinning ? 0.05 : 0.01; 
-                mesh.rotation.x += rotationSpeed;
-                mesh.rotation.y += rotationSpeed;
-            }
-            renderer.render(scene, camera);
-        }
-        
-        function updateAnimationColor() {
-            if (mesh) {
-                const accentColor = getComputedStyle(document.body).getPropertyValue('--main-accent-color').trim();
-                const colorHex = new THREE.Color(accentColor);
-                mesh.material.color.set(colorHex);
-                mesh.material.emissive.set(colorHex);
-            }
-        }
+                <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 mt-4 bg-card/30 p-6 rounded-theme border border-border/50 backdrop-blur-sm">
+                  
+                  <form onSubmit={handleSearch} className="w-full md:w-1/3 relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-accent transition-colors">
+                      <Search size={20} />
+                    </div>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Google durchsuchen..."
+                      className="w-full bg-card border border-border rounded-full py-3 pl-12 pr-4 text-text placeholder-secondary/70 focus:outline-none focus:ring-2 focus:ring-accent shadow-inner transition-all"
+                    />
+                  </form>
 
-        function changeAnimationShape() {
-            scene.remove(mesh);
-            currentGeometryIndex = (currentGeometryIndex + 1) % geometries.length;
-            localStorage.setItem('animationShapeIndex', currentGeometryIndex);
-            mesh = new THREE.Mesh(geometries[currentGeometryIndex], mesh.material);
-            scene.add(mesh);
-            updateAnimationColor();
-        }
+                  <div className="flex-shrink-0 -my-4">
+                     <Scene3D 
+                        shapeIndex={shapeIndex} 
+                        accentColor={currentTheme.vars['--main-accent-color']} 
+                        isFastSpinning={isFastSpinning}
+                        onClick={() => setIsFastSpinning(!isFastSpinning)}
+                     />
+                  </div>
 
-        function onWindowResize() {
-            const container = ELEMENTS.animationContainer;
-            if (camera && renderer && container) {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            }
-        }
+                  <div className="text-center md:text-right w-full md:w-1/3">
+                    <div className="text-5xl font-light tracking-tighter text-accent tabular-nums">
+                      {currentTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="text-sm font-medium text-secondary uppercase tracking-widest mt-1">
+                      {currentTime.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    </div>
+                  </div>
+
+                </div>
+              </main>
+
+              <button
+                onClick={toggleShape}
+                className="fixed bottom-6 right-6 w-14 h-14 bg-accent text-bg rounded-full shadow-glass hover:shadow-glassHover flex items-center justify-center transition-all hover:scale-105 active:scale-95 z-50 group"
+                aria-label="Change Shape"
+              >
+                <Dice5 size={28} className="group-hover:rotate-180 transition-transform duration-500" />
+              </button>
+
+            </div>
+          );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
