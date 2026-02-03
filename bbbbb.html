@@ -1,703 +1,452 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern Dashboard</title>
-    <!-- Fonts -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEIKO | DASHBOARD</title>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Poppins', 'sans-serif'],
-            },
-            colors: {
-              bg: 'var(--bg-color)',
-              text: 'var(--text-color)',
-              accent: 'var(--main-accent-color)',
-              secondary: 'var(--secondary-accent-color)',
-              card: 'var(--card-bg)',
-              border: 'var(--card-border)',
-            },
-            boxShadow: {
-              glass: 'var(--shadow-primary)',
-              glassHover: 'var(--shadow-hover)',
-            },
-            borderRadius: {
-              theme: 'var(--card-radius)',
-            },
-            keyframes: {
-                'fade-in-down': {
-                    '0%': { opacity: '0', transform: 'translateY(-20px)' },
-                    '100%': { opacity: '1', transform: 'translateY(0)' },
-                }
-            },
-            animation: {
-                'fade-in-down': 'fade-in-down 0.8s ease-out',
-            }
-          }
-        }
-      }
-    </script>
-
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.8); }
+        :root {
+            /* Theme 1: NIGHT PROTOCOL (Standard) */
+            --bg-color: #0d0d12;
+            --text-color: #e0e0e0;
+            --accent-color: #ff9900;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --tile-hover-bg: rgba(255, 153, 0, 0.15);
+            --menu-btn-bg: rgba(255, 255, 255, 0.12);
+            --overlay-bg: rgba(0, 0, 0, 0.85);
+        }
+
+        /* Theme 2: DAYLIGHT */
+        body.light-mode {
+            --bg-color: #f0f2f5;
+            --text-color: #2d3436;
+            --accent-color: #0984e3;
+            --glass-bg: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+            --tile-hover-bg: rgba(9, 132, 227, 0.1);
+            --menu-btn-bg: rgba(0, 0, 0, 0.08);
+            --overlay-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; 
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow: hidden; 
+        }
+
+        /* --- Burger Menu Icon --- */
+        .burger-menu-container {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 2000;
+            padding: 12px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .burger-menu-icon {
+            width: 24px;
+            height: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .burger-menu-icon span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-color);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* --- Menu Overlay & Buttons --- */
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s ease;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-overlay.open { opacity: 1; visibility: visible; }
+
+        .menu-content {
+            background: var(--bg-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 28px;
+            padding: 40px;
+            width: 360px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .menu-content h2 {
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        .menu-option {
+            display: block;
+            padding: 18px;
+            margin: 15px 0;
+            background: var(--menu-btn-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .menu-option:hover { 
+            background: var(--accent-color); 
+            color: #000;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        /* --- Top Section --- */
+        .top-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .tech-animation-container {
+            width: 180px; 
+            height: 180px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 15px var(--accent-color));
+        }
+
+        .header h1 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 5px 0;
+        }
+
+        /* --- Grid Layout (6x2) --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1300px;
+            padding: 0 15px;
+            z-index: 10;
+        }
+
+        @media (max-width: 1024px) { .grid-container { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 640px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
+
+        .tile {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            aspect-ratio: 1.3 / 1; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 10px;
+        }
+
+        .tile:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--accent-color);
+            background: var(--tile-hover-bg);
+            box-shadow: 0 15px 30px -10px var(--accent-color);
+        }
+
+        .tile .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+        .tile .text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600; 
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Bottom Bar --- */
+        .bottom-bar {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        /* --- Nixie Clock --- */
+        .nixie-clock {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        #time {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(3.5rem, 10vw, 5.5rem);
+            color: var(--accent-color);
+            text-shadow: 0 0 35px var(--accent-color);
+            line-height: 1;
+        }
+
+        #date {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            opacity: 0.9;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* --- Shape Change Float --- */
+        .change-shape-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.9;
+            z-index: 1000;
+            transition: 0.3s;
+            box-shadow: var(--glass-shadow);
+        }
+        .change-shape-container:hover { transform: rotate(180deg); border-color: var(--accent-color); }
     </style>
-
-    <!-- Import Map -->
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-    "react-dom": "https://esm.sh/react-dom@18.2.0?external=react",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?external=react",
-    "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.16.8?external=react,react-dom,three",
-    "three": "https://esm.sh/three@0.165.0",
-    "lucide-react": "https://esm.sh/lucide-react@0.395.0?external=react",
-    "@babel/standalone": "https://unpkg.com/@babel/standalone/babel.min.js",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
-  }
-}
-</script>
-
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
-    <div id="root"></div>
+    
+    <div class="burger-menu-container" id="burger-trigger">
+        <div class="burger-menu-icon">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+    
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="menu-content">
+            <h2>System Design</h2>
+            <a href="#" class="menu-option" data-theme="dark-mode">NIGHT PROTOCOL</a>
+            <a href="#" class="menu-option" data-theme="light-mode">DAYLIGHT</a>
+        </div>
+    </div>
 
-    <script type="text/babel" data-type="module">
-        import React, { useState, useEffect, useRef, useMemo } from 'react';
-        import { createRoot } from 'react-dom/client';
-        import { Canvas, useFrame } from '@react-three/fiber';
-        import * as THREE from 'three';
-        import { 
-          Menu, Search, X, Dice5, 
-          Mail, Building2, BookOpen, Briefcase, 
-          Cross, Bot, Sparkles, Zap, Newspaper, Cloud, Globe 
-        } from 'lucide-react';
+    <div class="top-section">
+        <div class="tech-animation-container" id="tech-animation-container">
+            <canvas id="animation-canvas"></canvas>
+        </div>
+        <header class="header">
+            <h1 id="greeting-title">SYSTEM START...</h1>
+        </header>
+    </div>
 
-        // --- CONSTANTS & TYPES ---
+    <main class="grid-container">
+        <a href="https://www.icloud.com/mail/" target="_blank" class="tile">
+            <div class="icon">📧</div><div class="text">iCloud</div>
+        </a>
+        <a href="https://mail.google.com/" target="_blank" class="tile">
+            <div class="icon">📨</div><div class="text">Gmail</div>
+        </a>
+        <a href="https://eckdde.sharepoint.com/sites/Startseite-Intranet" target="_blank" class="tile">
+            <div class="icon">🏢</div><div class="text">Intranet</div>
+        </a>
+        <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile">
+            <div class="icon">📖</div><div class="text">Wiki</div>
+        </a>
+        <a href="https://login.hrworks.de/?companyId=eckd&directssologin=true" target="_blank" class="tile">
+            <div class="icon">👔</div><div class="text">HRworks</div>
+        </a>
+        <a href="https://apps.churchx.de/itm-kiris-eckd-prod" target="_blank" class="tile">
+            <div class="icon">⛪</div><div class="text">Kiris</div>
+        </a>
+        <a href="https://chat.openai.com/" target="_blank" class="tile">
+            <div class="icon">🤖</div><div class="text">ChatGPT</div>
+        </a>
+        <a href="https://gemini.google.com/" target="_blank" class="tile">
+            <div class="icon">✨</div><div class="text">Gemini</div>
+        </a>
+        <a href="https://m365.cloud.microsoft/chat/" target="_blank" class="tile">
+            <div class="icon">💼</div><div class="text">Copilot</div>
+        </a>
+        <a href="https://news.google.com/" target="_blank" class="tile">
+            <div class="icon">📰</div><div class="text">News</div>
+        </a>
+        <a href="https://ekkw.cloud.com" target="_blank" class="tile">
+            <div class="icon">☁️</div><div class="text">EKKW</div>
+        </a>
+        <a href="https://www.bild.de/" target="_blank" class="tile">
+            <div class="icon">🗞️</div><div class="text">BILD</div>
+        </a>
+    </main>
 
-        const THEMES = [
-          {
-            id: 'monolith',
-            name: 'Monolith',
-            vars: {
-              '--bg-color': '#1a1b26',
-              '--text-color': '#e0e6ef',
-              '--main-accent-color': '#e38a2e',
-              '--secondary-accent-color': '#6a6a99',
-              '--card-bg': 'rgba(45, 46, 59, 0.6)',
-              '--card-border': 'rgba(90, 91, 115, 0.4)',
-              '--shadow-primary': '0 4px 15px rgba(0, 0, 0, 0.3)',
-              '--shadow-hover': '0 8px 30px rgba(0, 0, 0, 0.5)',
-              '--card-radius': '20px',
-            },
-          },
-          {
-            id: 'apple',
-            name: 'Apple Style',
-            vars: {
-              '--bg-color': '#f5f5f7',
-              '--text-color': '#1d1d1f',
-              '--main-accent-color': '#007aff',
-              '--secondary-accent-color': '#8e8e93',
-              '--card-bg': 'rgba(255, 255, 255, 0.7)',
-              '--card-border': 'rgba(200, 200, 200, 0.5)',
-              '--shadow-primary': '0 4px 16px rgba(0, 0, 0, 0.05)',
-              '--shadow-hover': '0 8px 25px rgba(0, 0, 0, 0.1)',
-              '--card-radius': '12px',
-            },
-          },
-          {
-            id: 'cyberpunk',
-            name: 'Cyberpunk',
-            vars: {
-              '--bg-color': '#120f26',
-              '--text-color': '#c7f2ff',
-              '--main-accent-color': '#ff00ff',
-              '--secondary-accent-color': '#00ffff',
-              '--card-bg': 'rgba(25, 20, 50, 0.7)',
-              '--card-border': 'rgba(50, 40, 100, 0.5)',
-              '--shadow-primary': '0 4px 15px rgba(0, 255, 255, 0.2)',
-              '--shadow-hover': '0 0 30px rgba(255, 0, 255, 0.4)',
-              '--card-radius': '4px',
-            },
-          },
-          {
-            id: 'minimalist',
-            name: 'Minimalist Dark',
-            vars: {
-              '--bg-color': '#2c2c34',
-              '--text-color': '#ededed',
-              '--main-accent-color': '#4a90e2',
-              '--secondary-accent-color': '#a0a0aa',
-              '--card-bg': 'rgba(50, 50, 60, 0.7)',
-              '--card-border': 'rgba(70, 70, 80, 0.5)',
-              '--shadow-primary': '0 4px 12px rgba(0, 0, 0, 0.2)',
-              '--shadow-hover': '0 8px 20px rgba(0, 0, 0, 0.3)',
-              '--card-radius': '15px',
-            },
-          },
-          {
-            id: 'high-contrast',
-            name: 'High Contrast',
-            vars: {
-              '--bg-color': '#000000',
-              '--text-color': '#ffffff',
-              '--main-accent-color': '#ffffff',
-              '--secondary-accent-color': '#cccccc',
-              '--card-bg': 'rgba(255, 255, 255, 0.1)',
-              '--card-border': 'rgba(255, 255, 255, 1)',
-              '--shadow-primary': 'none',
-              '--shadow-hover': '0 0 0 2px #ffffff',
-              '--card-radius': '0px',
-            },
-          },
-        ];
+    <div class="bottom-bar">
+        <div class="nixie-clock">
+            <div id="time">00:00:00</div>
+            <div id="date">SYNC...</div>
+        </div>
+    </div>
 
-        const LINKS = [
-          { id: '1', title: 'iCloud Mail', url: 'https://www.icloud.com/mail/', icon: Mail },
-          { id: '2', title: 'Gmail', url: 'https://mail.google.com/mail/u/0/#inbox', icon: Mail, color: '#EA4335' },
-          { id: '3', title: 'Intranet', url: 'https://eckdde.sharepoint.com/sites/Startseite-Intranet', icon: Building2 },
-          { id: '4', title: 'Wiki', url: 'https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde', icon: BookOpen },
-          { id: '5', title: 'HR Works', url: 'https://login.hrworks.de/?companyId=eckd&directssologin=true', icon: Briefcase },
-          { id: '6', title: 'Kiris', url: 'https://apps.churchx.de/itm-kiris-eckd-prod', icon: Cross },
-          { id: '7', title: 'ChatGPT', url: 'https://chat.openai.com/', icon: Bot, color: '#10A37F' },
-          { id: '8', title: 'Gemini', url: 'https://gemini.google.com/?hl=de', icon: Sparkles, color: '#4E86F4' },
-          { id: '9', title: 'Copilot', url: 'https://m365.cloud.microsoft:443/chat/', icon: Zap },
-          { id: '10', title: 'Google News', url: 'https://news.google.com/', icon: Newspaper },
-          { id: '11', title: 'EKKW Cloud', url: 'https://ekkw.cloud.com', icon: Cloud },
-          { id: '12', title: 'Bild.de', url: 'https://www.bild.de/', icon: Globe },
-        ];
+    <div id="change-shape-tile" class="change-shape-container" title="Animation ändern">
+        <span style="font-size: 28px;">🔄</span>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-        const ShapeType = {
-          ICOSAHEDRON: 0,
-          BOX: 1,
-          TORUS: 2,
-          SPHERE: 3,
-          CONE: 4,
+    <script>
+        function updateUI() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greet = (hour >= 5 && hour < 12) ? 'Guten Morgen' : (hour >= 12 && hour < 18) ? 'Guten Tag' : (hour >= 18 && hour < 22) ? 'Guten Abend' : 'Gute Nacht';
+            document.getElementById('greeting-title').textContent = `HALLO HEIKO, ${greet}`.toUpperCase();
+            document.getElementById('time').textContent = now.toLocaleTimeString('de-DE');
+            document.getElementById('date').textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
+        }
+
+        const burgerBtn = document.getElementById('burger-trigger');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuOptions = document.querySelectorAll('.menu-option');
+
+        burgerBtn.onclick = (e) => {
+            e.stopPropagation();
+            menuOverlay.classList.toggle('open');
         };
 
-        // --- 3D COMPONENTS ---
-
-        // Background Effect
-        const BackgroundParticles = ({ color }) => {
-          const count = 150;
-          const meshRef = useRef(null);
-          
-          const positions = useMemo(() => {
-            const pos = new Float32Array(count * 3);
-            for (let i = 0; i < count; i++) {
-              const r = 4 + Math.random() * 6;
-              const theta = Math.random() * Math.PI * 2;
-              const phi = Math.acos(2 * Math.random() - 1);
-              
-              pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-              pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-              pos[i * 3 + 2] = r * Math.cos(phi);
-            }
-            return pos;
-          }, []);
-
-          useFrame((state, delta) => {
-            if (meshRef.current) {
-              meshRef.current.rotation.y += delta * 0.02;
-              meshRef.current.rotation.x += delta * 0.01;
-              const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.3) * 0.02;
-              meshRef.current.scale.setScalar(pulse);
-            }
-          });
-
-          return (
-            <points ref={meshRef}>
-              <bufferGeometry>
-                <bufferAttribute
-                  attach="attributes-position"
-                  count={count}
-                  array={positions}
-                  itemSize={3}
-                />
-              </bufferGeometry>
-              <pointsMaterial 
-                color={color} 
-                size={0.05} 
-                transparent 
-                opacity={0.2} 
-                sizeAttenuation 
-                blending={THREE.AdditiveBlending}
-              />
-            </points>
-          );
+        window.onclick = (e) => {
+            if (e.target === menuOverlay) menuOverlay.classList.remove('open');
         };
 
-        const CyberOrb = ({ color }) => {
-          const coreRef = useRef(null);
-          const ringRef = useRef(null);
-
-          useFrame((state) => {
-            if (coreRef.current) {
-              const material = coreRef.current.material;
-              material.emissiveIntensity = 0.6 + Math.sin(state.clock.elapsedTime * 1.5) * 0.15;
-              coreRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 1.5) * 0.02);
+        function applyTheme(theme) {
+            document.body.classList.remove('light-mode');
+            if (theme === 'light-mode') {
+                document.body.classList.add('light-mode');
             }
-            if (ringRef.current) {
-              ringRef.current.rotation.z += 0.005;
-              ringRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1 + Math.PI / 2;
-            }
-          });
+            localStorage.setItem('hub-theme', theme);
+            if (mesh) updateAnimationColor();
+        }
 
-          return (
-            <group>
-              <mesh>
-                <icosahedronGeometry args={[1.4, 1]} />
-                <meshBasicMaterial color={color} wireframe transparent opacity={0.15} />
-              </mesh>
-              <mesh ref={coreRef}>
-                <icosahedronGeometry args={[0.7, 4]} />
-                <meshStandardMaterial 
-                  color={color} 
-                  emissive={color} 
-                  emissiveIntensity={0.6} 
-                  roughness={0.2} 
-                  metalness={0.8} 
-                />
-              </mesh>
-              <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
-                <torusGeometry args={[1.8, 0.02, 16, 100]} />
-                <meshBasicMaterial color={color} transparent opacity={0.3} />
-              </mesh>
-            </group>
-          );
-        };
-
-        const HyperCube = ({ color }) => {
-          const innerRef = useRef(null);
-          const outerRef = useRef(null);
-
-          useFrame((state, delta) => {
-            if (innerRef.current) {
-              innerRef.current.rotation.x -= delta * 0.8;
-              innerRef.current.rotation.z -= delta * 0.8;
-              const material = innerRef.current.material;
-              material.emissiveIntensity = 0.6 + Math.sin(state.clock.elapsedTime * 1.2) * 0.1;
-            }
-            if (outerRef.current) {
-               const scale = 1 + Math.sin(state.clock.elapsedTime) * 0.01;
-               outerRef.current.scale.setScalar(scale);
-            }
-          });
-
-          return (
-            <group>
-              <mesh ref={outerRef}>
-                <boxGeometry args={[1.8, 1.8, 1.8]} />
-                <meshBasicMaterial color={color} wireframe transparent opacity={0.15} />
-              </mesh>
-              <mesh ref={innerRef}>
-                <octahedronGeometry args={[0.8, 0]} />
-                <meshStandardMaterial 
-                  color={color} 
-                  emissive={color} 
-                  emissiveIntensity={0.6} 
-                  roughness={0.1} 
-                  metalness={0.9} 
-                />
-              </mesh>
-            </group>
-          );
-        };
-
-        const FluxKnot = ({ color }) => {
-          const shellRef = useRef(null);
-
-          useFrame((state, delta) => {
-            if (shellRef.current) {
-              shellRef.current.rotation.z -= delta * 0.2; 
-              const material = shellRef.current.material;
-              material.opacity = 0.12 + Math.sin(state.clock.elapsedTime) * 0.05;
-            }
-          });
-
-          return (
-            <group>
-              <mesh>
-                <torusKnotGeometry args={[0.9, 0.25, 128, 16]} />
-                <meshStandardMaterial 
-                  color={color} 
-                  emissive={color}
-                  emissiveIntensity={0.4}
-                  roughness={0.2}
-                  metalness={0.8}
-                />
-              </mesh>
-              <mesh ref={shellRef}>
-                <torusKnotGeometry args={[1.0, 0.28, 128, 16]} />
-                <meshBasicMaterial 
-                  color={color} 
-                  wireframe 
-                  transparent 
-                  opacity={0.1} 
-                  blending={THREE.AdditiveBlending}
-                />
-              </mesh>
-            </group>
-          );
-        };
-
-        const ParticleCloud = ({ color }) => {
-          const count = 400;
-          const pointsRef = useRef(null);
-          
-          const { positions, initialPositions } = useMemo(() => {
-            const pos = new Float32Array(count * 3);
-            for (let i = 0; i < count; i++) {
-              const theta = Math.random() * Math.PI * 2;
-              const phi = Math.acos(2 * Math.random() - 1);
-              const r = 1.2 + Math.random() * 0.5;
-              pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-              pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-              pos[i * 3 + 2] = r * Math.cos(phi);
-            }
-            return { positions: pos, initialPositions: new Float32Array(pos) };
-          }, []);
-
-          useFrame((state) => {
-            if (pointsRef.current) {
-              const time = state.clock.elapsedTime;
-              const positionsAttribute = pointsRef.current.geometry.attributes.position;
-              
-              for (let i = 0; i < count; i++) {
-                const ix = i * 3;
-                const iy = i * 3 + 1;
-                const iz = i * 3 + 2;
-                
-                const factor = 1 + Math.sin(time * 1.0 + i * 0.1) * 0.03;
-                
-                positionsAttribute.setXYZ(
-                  i,
-                  initialPositions[ix] * factor,
-                  initialPositions[iy] * factor,
-                  initialPositions[iz] * factor
-                );
-              }
-              positionsAttribute.needsUpdate = true;
-              pointsRef.current.rotation.y += 0.002;
-            }
-          });
-
-          return (
-            <points ref={pointsRef}>
-              <bufferGeometry>
-                <bufferAttribute
-                  attach="attributes-position"
-                  count={count}
-                  array={positions}
-                  itemSize={3}
-                />
-              </bufferGeometry>
-              <pointsMaterial 
-                color={color} 
-                size={0.05} 
-                transparent 
-                opacity={0.6} 
-                sizeAttenuation 
-                blending={THREE.AdditiveBlending}
-              />
-            </points>
-          );
-        };
-
-        const CrystalSpire = ({ color }) => {
-          const groupRef = useRef(null);
-          
-          useFrame((state) => {
-            if (groupRef.current) {
-               groupRef.current.children.forEach((child) => {
-                 if (child.isMesh && child.material.isMeshStandardMaterial) {
-                    child.material.emissiveIntensity = 0.3 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
-                 }
-               });
-            }
-          });
-
-          return (
-            <group ref={groupRef}>
-              <mesh position={[0, -0.5, 0]}>
-                <coneGeometry args={[1, 2, 4]} />
-                <meshStandardMaterial 
-                  color={color} 
-                  emissive={color}
-                  emissiveIntensity={0.3}
-                  wireframe
-                  transparent
-                  opacity={0.4}
-                />
-              </mesh>
-              <mesh position={[0, 0.5, 0]} rotation={[Math.PI, 0, 0]}>
-                <coneGeometry args={[1, 2, 4]} />
-                <meshStandardMaterial 
-                  color={color} 
-                  emissive={color}
-                  emissiveIntensity={0.3}
-                  wireframe
-                  transparent
-                  opacity={0.4}
-                />
-              </mesh>
-              <mesh>
-                <octahedronGeometry args={[0.5]} />
-                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} />
-              </mesh>
-              <mesh rotation={[Math.PI / 4, 0, 0]}>
-                 <torusGeometry args={[1.5, 0.02, 16, 50]} />
-                 <meshBasicMaterial color={color} transparent opacity={0.2} />
-              </mesh>
-            </group>
-          );
-        };
-
-        const AnimatedShape = ({ shapeIndex, color, isFastSpinning }) => {
-          const groupRef = useRef(null);
-
-          useFrame((state, delta) => {
-            if (groupRef.current) {
-              const speed = isFastSpinning ? 2.5 : 0.3;
-              groupRef.current.rotation.y += delta * speed;
-              groupRef.current.rotation.x += delta * (speed * 0.15); 
-              
-              const t = state.clock.getElapsedTime();
-              groupRef.current.position.y = Math.sin(t * 0.6) * 0.1;
-            }
-          });
-
-          const getShape = () => {
-            switch (shapeIndex) {
-              case ShapeType.ICOSAHEDRON: return <CyberOrb color={color} />;
-              case ShapeType.BOX: return <HyperCube color={color} />;
-              case ShapeType.TORUS: return <FluxKnot color={color} />;
-              case ShapeType.SPHERE: return <ParticleCloud color={color} />;
-              case ShapeType.CONE: return <CrystalSpire color={color} />;
-              default: return <CyberOrb color={color} />;
-            }
-          };
-
-          return (
-            <group ref={groupRef}>
-              {getShape()}
-            </group>
-          );
-        };
-
-        const Scene3D = ({ shapeIndex, accentColor, isFastSpinning, onClick }) => {
-          return (
-            <div 
-              className="w-[140px] h-[140px] cursor-pointer hover:scale-110 transition-transform duration-500 ease-out"
-              onClick={onClick}
-              title="Click to toggle speed"
-            >
-              <Canvas camera={{ position: [0, 0, 4.5], fov: 45 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1.2} />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} color={accentColor} />
-                <BackgroundParticles color={accentColor} />
-                <AnimatedShape 
-                  shapeIndex={shapeIndex} 
-                  color={accentColor} 
-                  isFastSpinning={isFastSpinning} 
-                />
-              </Canvas>
-            </div>
-          );
-        };
-
-        // --- APP COMPONENT ---
-
-        const App = () => {
-          const [currentThemeId, setCurrentThemeId] = useState(() => localStorage.getItem('theme') || 'monolith');
-          const [shapeIndex, setShapeIndex] = useState(() => parseInt(localStorage.getItem('shape') || '0', 10));
-          const [isMenuOpen, setIsMenuOpen] = useState(false);
-          const [searchQuery, setSearchQuery] = useState('');
-          const [currentTime, setCurrentTime] = useState(new Date());
-          const [isFastSpinning, setIsFastSpinning] = useState(false);
-
-          const currentTheme = useMemo(() => THEMES.find(t => t.id === currentThemeId) || THEMES[0], [currentThemeId]);
-          
-          useEffect(() => {
-            const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-            return () => clearInterval(timer);
-          }, []);
-
-          useEffect(() => {
-            localStorage.setItem('theme', currentThemeId);
-            Object.entries(currentTheme.vars).forEach(([key, value]) => {
-              document.body.style.setProperty(key, value);
-            });
-          }, [currentThemeId, currentTheme]);
-
-          useEffect(() => {
-            localStorage.setItem('shape', shapeIndex.toString());
-          }, [shapeIndex]);
-
-          const handleSearch = (e) => {
+        menuOptions.forEach(opt => opt.onclick = (e) => {
             e.preventDefault();
-            if (!searchQuery.trim()) return;
+            applyTheme(opt.dataset.theme);
+            menuOverlay.classList.remove('open');
+        });
 
-            let url = searchQuery;
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-              if (url.includes('.') && !url.includes(' ')) {
-                url = 'https://' + url;
-              } else {
-                url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
-              }
-            }
-            window.open(url, '_blank');
-            setSearchQuery('');
-          };
+        let scene, camera, renderer, mesh;
+        let isFast = false;
+        let shapeIdx = parseInt(localStorage.getItem('anim-shape') || '0');
+        
+        const geoms = [
+            new THREE.IcosahedronGeometry(1.5, 0),
+            new THREE.TorusKnotGeometry(1, 0.3, 100, 16),
+            new THREE.OctahedronGeometry(1.5, 0),
+            new THREE.TorusGeometry(1.2, 0.4, 16, 100),
+            new THREE.DodecahedronGeometry(1.5, 0)
+        ];
 
-          const toggleShape = () => {
-            setShapeIndex(prev => (prev + 1) % 5);
-          };
+        function init3D() {
+            const container = document.getElementById('tech-animation-container');
+            const canvas = document.getElementById('animation-canvas');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(180, 180);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            const mat = new THREE.MeshStandardMaterial({ roughness: 0.1, metalness: 0.7, flatShading: true });
+            mesh = new THREE.Mesh(geoms[shapeIdx], mat);
+            scene.add(mesh);
+            
+            const pointLight1 = new THREE.PointLight(0xffffff, 4.0);
+            pointLight1.position.set(5, 5, 5);
+            scene.add(pointLight1, new THREE.AmbientLight(0xffffff, 1.5));
+            
+            camera.position.z = 4;
+            updateAnimationColor();
+            animate();
+        }
 
-          const getGreeting = () => {
-            const hour = currentTime.getHours();
-            let timeOfDay = 'TAG';
-            if (hour >= 5 && hour < 10) timeOfDay = 'MORGEN';
-            else if (hour >= 18) timeOfDay = 'ABEND';
-            return `GUTEN ${timeOfDay}, HEIKO!`;
-          };
+        function updateAnimationColor() {
+            if (!mesh) return;
+            const color = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+            mesh.material.color.set(color);
+            mesh.material.emissive.set(color);
+            mesh.material.emissiveIntensity = 1.0;
+        }
 
-          return (
-            <div className="min-h-screen w-full bg-bg text-text transition-colors duration-500 ease-in-out font-sans flex flex-col items-center p-6 relative overflow-x-hidden">
-              <div className="fixed inset-0 pointer-events-none bg-bg opacity-90 -z-10" />
+        function animate() {
+            requestAnimationFrame(animate);
+            mesh.rotation.x += isFast ? 0.05 : 0.006;
+            mesh.rotation.y += isFast ? 0.05 : 0.012;
+            renderer.render(scene, camera);
+        }
 
-              <button 
-                onClick={() => setIsMenuOpen(true)}
-                className="fixed top-6 left-6 z-50 p-2 rounded-full hover:bg-white/10 transition-colors text-text"
-              >
-                <Menu size={32} />
-              </button>
-
-              <div 
-                className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-all duration-300 flex items-start justify-start p-6 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-                onClick={(e) => { if(e.target === e.currentTarget) setIsMenuOpen(false); }}
-              >
-                <div className={`bg-card border border-border rounded-theme p-6 w-72 shadow-glass transform transition-transform duration-300 flex flex-col gap-4 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                  <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-xl font-bold">Themes</h2>
-                    <button onClick={() => setIsMenuOpen(false)} className="hover:text-accent transition-colors">
-                      <X size={24} />
-                    </button>
-                  </div>
-                  {THEMES.map(theme => (
-                    <button
-                      key={theme.id}
-                      onClick={() => { setCurrentThemeId(theme.id); setIsMenuOpen(false); }}
-                      className={`text-left px-4 py-3 rounded-lg transition-all font-medium ${currentThemeId === theme.id ? 'bg-accent text-bg' : 'bg-white/5 hover:bg-white/10 hover:translate-x-1'}`}
-                    >
-                      {theme.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <main className="w-full max-w-6xl flex flex-col gap-10 mt-12 mb-24 z-10">
-                <header className="text-center animate-fade-in-down">
-                  <h1 className="text-4xl md:text-6xl font-bold tracking-tight drop-shadow-md">
-                    {getGreeting()}
-                  </h1>
-                </header>
-
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 md:gap-6 w-full">
-                  {LINKS.map((link) => (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group relative flex flex-col items-center justify-center aspect-square bg-card border border-border rounded-theme shadow-glass hover:shadow-glassHover transition-all duration-300 hover:-translate-y-1 backdrop-blur-md overflow-hidden"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      
-                      <link.icon 
-                        size={40} 
-                        className="mb-3 transition-transform duration-300 group-hover:scale-110 group-hover:text-accent"
-                        color={link.color ? link.color : 'currentColor'}
-                      />
-                      <span className="text-xs md:text-sm font-medium opacity-90 text-center px-2 z-10">
-                        {link.title}
-                      </span>
-                    </a>
-                  ))}
-                </div>
-
-                <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 mt-4 bg-card/30 p-6 rounded-theme border border-border/50 backdrop-blur-sm">
-                  
-                  <form onSubmit={handleSearch} className="w-full md:w-1/3 relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-accent transition-colors">
-                      <Search size={20} />
-                    </div>
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Google durchsuchen..."
-                      className="w-full bg-card border border-border rounded-full py-3 pl-12 pr-4 text-text placeholder-secondary/70 focus:outline-none focus:ring-2 focus:ring-accent shadow-inner transition-all"
-                    />
-                  </form>
-
-                  <div className="flex-shrink-0 -my-4">
-                     <Scene3D 
-                        shapeIndex={shapeIndex} 
-                        accentColor={currentTheme.vars['--main-accent-color']} 
-                        isFastSpinning={isFastSpinning}
-                        onClick={() => setIsFastSpinning(!isFastSpinning)}
-                     />
-                  </div>
-
-                  <div className="text-center md:text-right w-full md:w-1/3">
-                    <div className="text-5xl font-light tracking-tighter text-accent tabular-nums">
-                      {currentTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                    <div className="text-sm font-medium text-secondary uppercase tracking-widest mt-1">
-                      {currentTime.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
-                    </div>
-                  </div>
-
-                </div>
-              </main>
-
-              <button
-                onClick={toggleShape}
-                className="fixed bottom-6 right-6 w-14 h-14 bg-accent text-bg rounded-full shadow-glass hover:shadow-glassHover flex items-center justify-center transition-all hover:scale-105 active:scale-95 z-50 group"
-                aria-label="Change Shape"
-              >
-                <Dice5 size={28} className="group-hover:rotate-180 transition-transform duration-500" />
-              </button>
-
-            </div>
-          );
+        document.getElementById('tech-animation-container').onclick = () => isFast = !isFast;
+        document.getElementById('change-shape-tile').onclick = (e) => {
+            e.preventDefault();
+            shapeIdx = (shapeIdx + 1) % geoms.length;
+            mesh.geometry = geoms[shapeIdx];
+            localStorage.setItem('anim-shape', shapeIdx);
         };
 
-        const root = createRoot(document.getElementById('root'));
-        root.render(<App />);
+        window.onload = () => {
+            updateUI();
+            setInterval(updateUI, 1000);
+            applyTheme(localStorage.getItem('hub-theme') || 'dark-mode');
+            init3D();
+        };
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
