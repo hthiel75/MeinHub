@@ -3,448 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEIKO | DASHBOARD</title>
-    <!-- Google Fonts -->
+    <title>HEIKO | CORE INTERFACE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&family=JetBrains+Mono:wght@300;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Theme 1: NIGHT PROTOCOL (Standard) */
-            --bg-color: #0d0d12;
-            --text-color: #e0e0e0;
-            --accent-color: #ff9900;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --tile-hover-bg: rgba(255, 153, 0, 0.15);
-            --menu-btn-bg: rgba(255, 255, 255, 0.12);
-            --overlay-bg: rgba(0, 0, 0, 0.85);
+            --bg-deep: #020205;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --sidebar-bg: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(0, 242, 255, 0.15);
+            --accent: #00f2ff;
+            --accent-dim: rgba(0, 242, 255, 0.05);
+            --grid-line: rgba(0, 242, 255, 0.08); 
+            --text: #e0e0e0;
+            --sidebar-width: 380px;
+            --dot-bg: rgba(255, 255, 255, 0.1); 
         }
 
-        /* Theme 2: DAYLIGHT */
         body.light-mode {
-            --bg-color: #f0f2f5;
-            --text-color: #2d3436;
-            --accent-color: #0984e3;
-            --glass-bg: rgba(0, 0, 0, 0.05);
-            --glass-border: rgba(0, 0, 0, 0.15);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
-            --tile-hover-bg: rgba(9, 132, 227, 0.1);
-            --menu-btn-bg: rgba(0, 0, 0, 0.08);
-            --overlay-bg: rgba(255, 255, 255, 0.7);
+            --bg-deep: #f8fafc;
+            --panel-bg: rgba(0, 0, 0, 0.02);
+            --sidebar-bg: rgba(255, 255, 255, 0.9);
+            --border-glow: rgba(37, 99, 235, 0.1);
+            --accent: #2563eb;
+            --accent-dim: rgba(37, 99, 235, 0.05);
+            --grid-line: rgba(37, 99, 235, 0.1);
+            --text: #1e293b;
+            --dot-bg: rgba(0, 0, 0, 0.1); 
         }
 
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            cursor: crosshair;
         }
 
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text);
+            height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between; 
-            min-height: 100vh;
-            padding: 20px;
-            transition: background-color 0.4s ease, color 0.4s ease;
-            overflow: hidden; 
+            overflow: hidden;
+            transition: all 0.5s ease;
         }
 
-        /* --- Burger Menu Icon --- */
-        .burger-menu-container {
-            position: fixed;
-            top: 25px;
-            left: 25px;
-            z-index: 2000;
-            padding: 12px;
-            background: var(--glass-bg);
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            box-shadow: var(--glass-shadow);
-        }
-
-        .burger-menu-icon {
-            width: 24px;
-            height: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .burger-menu-icon span {
-            display: block;
-            width: 100%;
-            height: 2px;
-            background-color: var(--text-color);
-            border-radius: 2px;
-            transition: 0.3s;
-        }
-
-        /* --- Menu Overlay & Buttons --- */
-        .menu-overlay {
+        .bg-fx {
             position: fixed;
             inset: 0;
-            background: var(--overlay-bg);
-            backdrop-filter: blur(20px);
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.3s ease;
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            z-index: -1;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 50%, var(--accent-dim) 0%, transparent 80%),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, var(--grid-line) 1px, var(--grid-line) 2px);
+            pointer-events: none;
         }
 
-        .menu-overlay.open { opacity: 1; visibility: visible; }
-
-        .menu-content {
-            background: var(--bg-color);
-            border: 2px solid var(--accent-color);
-            border-radius: 28px;
-            padding: 40px;
-            width: 360px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            text-align: center;
-        }
-
-        .menu-content h2 {
-            font-family: 'Share Tech Mono', monospace;
-            margin-bottom: 30px;
-            letter-spacing: 3px;
-            color: var(--accent-color);
-            text-transform: uppercase;
-        }
-
-        .menu-option {
-            display: block;
-            padding: 18px;
-            margin: 15px 0;
-            background: var(--menu-btn-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .menu-option:hover { 
-            background: var(--accent-color); 
-            color: #000;
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        /* --- Top Section --- */
-        .top-section {
+        aside {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(40px);
+            border-right: 1px solid var(--border-glow);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-top: 5px;
-        }
-
-        .tech-animation-container {
-            width: 180px; 
-            height: 180px;
-            cursor: pointer;
-            filter: drop-shadow(0 0 15px var(--accent-color));
-        }
-
-        .header h1 {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            font-weight: 300;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin: 5px 0;
-        }
-
-        /* --- Grid Layout (6x2) --- */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 1300px;
-            padding: 0 15px;
+            padding: 40px;
+            justify-content: space-between;
             z-index: 10;
         }
 
-        @media (max-width: 1024px) { .grid-container { grid-template-columns: repeat(4, 1fr); } }
-        @media (max-width: 640px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
-
-        .tile {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            aspect-ratio: 1.3 / 1; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            padding: 10px;
-        }
-
-        .tile:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--accent-color);
-            background: var(--tile-hover-bg);
-            box-shadow: 0 15px 30px -10px var(--accent-color);
-        }
-
-        .tile .icon { font-size: 2.5rem; margin-bottom: 10px; }
-
-        .tile .text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600; 
+        .system-info h1 {
+            font-size: 0.7rem;
+            letter-spacing: 0.6em;
             text-transform: uppercase;
-            text-align: center;
-            letter-spacing: 0.5px;
+            color: var(--accent);
+            margin-bottom: 10px;
         }
 
-        /* --- Bottom Bar --- */
-        .bottom-bar {
-            display: flex;
-            justify-content: center;
+        #animation-container {
             width: 100%;
-            margin-bottom: 25px;
+            aspect-ratio: 1.5;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* --- Nixie Clock --- */
-        .nixie-clock {
+        #animation-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            filter: drop-shadow(0 0 20px var(--accent-dim));
+        }
+
+        .progress-section {
+            margin: 20px 0;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-header {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            opacity: 0.8;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .dots-grid {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 6px;
+            max-width: 100%;
+        }
+
+        .dot {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: var(--dot-bg); 
+            transition: all 0.3s ease;
+        }
+
+        .dot.passed {
+            background: var(--text);
+            box-shadow: 0 0 5px var(--accent-dim);
+        }
+
+        .progress-stats {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            margin-top: 15px;
+            opacity: 0.5;
             text-align: center;
+        }
+
+        .clock-section {
+            font-family: 'JetBrains Mono', monospace;
         }
 
         #time {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(3.5rem, 10vw, 5.5rem);
-            color: var(--accent-color);
-            text-shadow: 0 0 35px var(--accent-color);
+            font-size: 4.2rem;
+            font-weight: 700;
             line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
         }
 
         #date {
-            font-size: 1.1rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            opacity: 0.9;
-            font-weight: 600;
-            margin-top: 10px;
+            opacity: 0.6;
         }
 
-        /* --- Shape Change Float --- */
-        .change-shape-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 56px;
-            height: 56px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
+        main {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0.9;
-            z-index: 1000;
-            transition: 0.3s;
-            box-shadow: var(--glass-shadow);
+            justify-content: center; 
+            align-items: center; 
         }
-        .change-shape-container:hover { transform: rotate(180deg); border-color: var(--accent-color); }
+
+        .content-limiter {
+            width: 100%;
+            max-width: 1100px; 
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 60px 50px; 
+        }
+
+        .category-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .category-group h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+            margin-bottom: 10px;
+        }
+
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .tile {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            padding: 25px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            background-color: var(--accent-dim);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px -5px rgba(0, 242, 255, 0.2);
+        }
+
+        .tile .icon { font-size: 2rem; }
+        .tile .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.8;
+        }
+
+        .tile:hover .label { color: var(--accent); opacity: 1; }
+
+        .controls {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .ctrl-btn {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            color: var(--text);
+            padding: 10px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-glow); }
     </style>
 </head>
-<body>
-    
-    <div class="burger-menu-container" id="burger-trigger">
-        <div class="burger-menu-icon">
-            <span></span><span></span><span></span>
+<body class="dark-mode">
+
+    <div class="bg-fx"></div>
+
+    <aside>
+        <div class="system-info">
+            <h1>CORE_INTERFACE_V4</h1>
+            <div id="animation-container">
+                <canvas id="animation-canvas"></canvas>
+            </div>
         </div>
-    </div>
-    
-    <div class="menu-overlay" id="menu-overlay">
-        <div class="menu-content">
-            <h2>System Design</h2>
-            <a href="#" class="menu-option" data-theme="dark-mode">NIGHT PROTOCOL</a>
-            <a href="#" class="menu-option" data-theme="light-mode">DAYLIGHT</a>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <span id="progress-year">2026</span>
+                <span id="progress-percentage">0%</span>
+            </div>
+            <div class="dots-grid" id="dots-grid"></div>
+            <div class="progress-stats" id="progress-stats">
+                0 TAGE VERGANGEN · 0 VERBLEIBEND
+            </div>
         </div>
+
+        <div class="clock-section">
+            <div id="time">00:00:00</div>
+            <div id="date">SYNCING...</div>
+        </div>
+    </aside>
+
+    <div class="controls">
+        <button class="ctrl-btn" id="shape-toggle">Switch_Geometry</button>
+        <button class="ctrl-btn" id="theme-toggle">Toggle_Mode</button>
     </div>
 
-    <div class="top-section">
-        <div class="tech-animation-container" id="tech-animation-container">
-            <canvas id="animation-canvas"></canvas>
-        </div>
-        <header class="header">
-            <h1 id="greeting-title">SYSTEM START...</h1>
-        </header>
-    </div>
+    <main>
+        <div class="content-limiter">
+            <section class="category-group">
+                <h2>01 // COMMUNICATION</h2>
+                <div class="tiles-grid">
+                    <a href="https://www.icloud.com/mail/" target="_blank" class="tile">
+                        <span class="icon">📧</span><span class="label">iCloud</span>
+                    </a>
+                    <a href="https://mail.google.com/" target="_blank" class="tile">
+                        <span class="icon">📨</span><span class="label">Gmail</span>
+                    </a>
+                    <a href="https://eckdde.sharepoint.com/sites/Startseite-Intranet" target="_blank" class="tile">
+                        <span class="icon">🏢</span><span class="label">Intranet</span>
+                    </a>
+                </div>
+            </section>
 
-    <main class="grid-container">
-        <a href="https://www.icloud.com/mail/" target="_blank" class="tile">
-            <div class="icon">📧</div><div class="text">iCloud</div>
-        </a>
-        <a href="https://mail.google.com/" target="_blank" class="tile">
-            <div class="icon">📨</div><div class="text">Gmail</div>
-        </a>
-        <a href="https://eckdde.sharepoint.com/sites/Startseite-Intranet" target="_blank" class="tile">
-            <div class="icon">🏢</div><div class="text">Intranet</div>
-        </a>
-        <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile">
-            <div class="icon">📖</div><div class="text">Wiki</div>
-        </a>
-        <a href="https://login.hrworks.de/?companyId=eckd&directssologin=true" target="_blank" class="tile">
-            <div class="icon">👔</div><div class="text">HRworks</div>
-        </a>
-        <a href="https://apps.churchx.de/itm-kiris-eckd-prod" target="_blank" class="tile">
-            <div class="icon">⛪</div><div class="text">Kiris</div>
-        </a>
-        <a href="https://chat.openai.com/" target="_blank" class="tile">
-            <div class="icon">🤖</div><div class="text">ChatGPT</div>
-        </a>
-        <a href="https://gemini.google.com/" target="_blank" class="tile">
-            <div class="icon">✨</div><div class="text">Gemini</div>
-        </a>
-        <a href="https://m365.cloud.microsoft/chat/" target="_blank" class="tile">
-            <div class="icon">💼</div><div class="text">Copilot</div>
-        </a>
-        <a href="https://news.google.com/" target="_blank" class="tile">
-            <div class="icon">📰</div><div class="text">News</div>
-        </a>
-        <a href="https://ekkw.cloud.com" target="_blank" class="tile">
-            <div class="icon">☁️</div><div class="text">EKKW</div>
-        </a>
-        <a href="https://www.bild.de/" target="_blank" class="tile">
-            <div class="icon">🗞️</div><div class="text">BILD</div>
-        </a>
+            <section class="category-group">
+                <h2>02 // INTELLIGENCE</h2>
+                <div class="tiles-grid">
+                    <a href="https://chat.openai.com/" target="_blank" class="tile">
+                        <span class="icon">🤖</span><span class="label">ChatGPT</span>
+                    </a>
+                    <a href="https://gemini.google.com/" target="_blank" class="tile">
+                        <span class="icon">✨</span><span class="label">Gemini</span>
+                    </a>
+                    <a href="https://m365.cloud.microsoft/chat/" target="_blank" class="tile">
+                        <span class="icon">💼</span><span class="label">Copilot</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="category-group">
+                <h2>03 // OPERATIONS</h2>
+                <div class="tiles-grid">
+                    <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile">
+                        <span class="icon">📖</span><span class="label">Wiki</span>
+                    </a>
+                    <a href="https://login.hrworks.de/?companyId=eckd&directssologin=true" target="_blank" class="tile">
+                        <span class="icon">👔</span><span class="label">HRworks</span>
+                    </a>
+                    <a href="https://apps.churchx.de/itm-kiris-eckd-prod" target="_blank" class="tile">
+                        <span class="icon">⛪</span><span class="label">Kiris</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="category-group">
+                <h2>04 // EXTERNAL_NODES</h2>
+                <div class="tiles-grid">
+                    <a href="https://news.google.com/" target="_blank" class="tile">
+                        <span class="icon">📰</span><span class="label">News</span>
+                    </a>
+                    <a href="https://ekkw.cloud.com" target="_blank" class="tile">
+                        <span class="icon">☁️</span><span class="label">EKKW</span>
+                    </a>
+                    <a href="https://www.bild.de/" target="_blank" class="tile">
+                        <span class="icon">🗞️</span><span class="label">BILD</span>
+                    </a>
+                </div>
+            </section>
+        </div>
     </main>
 
-    <div class="bottom-bar">
-        <div class="nixie-clock">
-            <div id="time">00:00:00</div>
-            <div id="date">SYNC...</div>
-        </div>
-    </div>
-
-    <div id="change-shape-tile" class="change-shape-container" title="Animation ändern">
-        <span style="font-size: 28px;">🔄</span>
-    </div>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
     <script>
-        function updateUI() {
+        function updateClock() {
             const now = new Date();
-            const hour = now.getHours();
-            let greet = (hour >= 5 && hour < 12) ? 'Guten Morgen' : (hour >= 12 && hour < 18) ? 'Guten Tag' : (hour >= 18 && hour < 22) ? 'Guten Abend' : 'Gute Nacht';
-            document.getElementById('greeting-title').textContent = `HALLO HEIKO, ${greet}`.toUpperCase();
-            document.getElementById('time').textContent = now.toLocaleTimeString('de-DE');
+            document.getElementById('time').textContent = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
             document.getElementById('date').textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
         }
 
-        const burgerBtn = document.getElementById('burger-trigger');
-        const menuOverlay = document.getElementById('menu-overlay');
-        const menuOptions = document.querySelectorAll('.menu-option');
+        function updateProgress() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const start = new Date(year, 0, 1);
+            const end = new Date(year + 1, 0, 1);
+            
+            // Heutiger Tag als Startzeitpunkt (00:00:00)
+            const todayStart = new Date(year, now.getMonth(), now.getDate());
+            
+            // Gesamtanzahl Tage im Jahr (z.B. 365)
+            const totalDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+            
+            // Tage die VOR heute vollständig abgeschlossen wurden (z.B. 35 am 05.02.)
+            const fullyPassedDays = Math.round((todayStart - start) / (1000 * 60 * 60 * 24));
+            
+            // Der aktuelle Rang des Tages im Jahr (z.B. 36 am 05.02.)
+            const currentDayNumber = fullyPassedDays + 1;
+            
+            // Tage die NACH heute noch verbleiben (z.B. 365 - 36 = 329)
+            const remainingAfterToday = totalDays - currentDayNumber;
+            
+            const percentage = ((fullyPassedDays / totalDays) * 100).toFixed(1);
+            
+            document.getElementById('progress-year').textContent = year;
+            document.getElementById('progress-percentage').textContent = percentage + '%';
+            document.getElementById('progress-stats').textContent = `${fullyPassedDays} TAGE VERGANGEN · ${remainingAfterToday} VERBLEIBEND`;
 
-        burgerBtn.onclick = (e) => {
-            e.stopPropagation();
-            menuOverlay.classList.toggle('open');
-        };
+            const dotsGrid = document.getElementById('dots-grid');
+            dotsGrid.innerHTML = '';
+            
+            const totalDots = 52; 
+            const passedDots = Math.floor((fullyPassedDays / totalDays) * totalDots);
 
-        window.onclick = (e) => {
-            if (e.target === menuOverlay) menuOverlay.classList.remove('open');
-        };
-
-        function applyTheme(theme) {
-            document.body.classList.remove('light-mode');
-            if (theme === 'light-mode') {
-                document.body.classList.add('light-mode');
+            for (let i = 0; i < totalDots; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i < passedDots ? ' passed' : '');
+                dotsGrid.appendChild(dot);
             }
-            localStorage.setItem('hub-theme', theme);
-            if (mesh) updateAnimationColor();
         }
 
-        menuOptions.forEach(opt => opt.onclick = (e) => {
-            e.preventDefault();
-            applyTheme(opt.dataset.theme);
-            menuOverlay.classList.remove('open');
-        });
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.onclick = () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('core-theme', isLight ? 'light' : 'dark');
+            updateAnimationColor();
+        };
 
         let scene, camera, renderer, mesh;
-        let isFast = false;
-        let shapeIdx = parseInt(localStorage.getItem('anim-shape') || '0');
-        
+        let shapeIdx = parseInt(localStorage.getItem('core-shape') || '0');
         const geoms = [
-            new THREE.IcosahedronGeometry(1.5, 0),
-            new THREE.TorusKnotGeometry(1, 0.3, 100, 16),
-            new THREE.OctahedronGeometry(1.5, 0),
-            new THREE.TorusGeometry(1.2, 0.4, 16, 100),
-            new THREE.DodecahedronGeometry(1.5, 0)
+            new THREE.TorusKnotGeometry(1.2, 0.4, 120, 20),
+            new THREE.IcosahedronGeometry(1.8, 1),
+            new THREE.DodecahedronGeometry(1.8, 0),
+            new THREE.TorusGeometry(1.4, 0.3, 16, 100)
         ];
 
         function init3D() {
-            const container = document.getElementById('tech-animation-container');
+            const container = document.getElementById('animation-container');
             const canvas = document.getElementById('animation-canvas');
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-            
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-            renderer.setSize(180, 180);
             renderer.setPixelRatio(window.devicePixelRatio);
             
-            const mat = new THREE.MeshStandardMaterial({ roughness: 0.1, metalness: 0.7, flatShading: true });
-            mesh = new THREE.Mesh(geoms[shapeIdx], mat);
+            const material = new THREE.MeshStandardMaterial({ wireframe: true, transparent: true, opacity: 0.6 });
+            mesh = new THREE.Mesh(geoms[shapeIdx], material);
             scene.add(mesh);
-            
-            const pointLight1 = new THREE.PointLight(0xffffff, 4.0);
-            pointLight1.position.set(5, 5, 5);
-            scene.add(pointLight1, new THREE.AmbientLight(0xffffff, 1.5));
-            
-            camera.position.z = 4;
+
+            const pLight = new THREE.PointLight(0xffffff, 2);
+            pLight.position.set(5, 5, 5);
+            scene.add(pLight, new THREE.AmbientLight(0xffffff, 0.5));
+
+            camera.position.z = 4.5;
+            renderer.setSize(container.clientWidth, container.clientHeight);
             updateAnimationColor();
             animate();
         }
 
         function updateAnimationColor() {
-            if (!mesh) return;
-            const color = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
-            mesh.material.color.set(color);
-            mesh.material.emissive.set(color);
-            mesh.material.emissiveIntensity = 1.0;
+            const accent = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+            mesh.material.color.set(accent);
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            mesh.rotation.x += isFast ? 0.05 : 0.006;
-            mesh.rotation.y += isFast ? 0.05 : 0.012;
+            mesh.rotation.y += 0.005;
+            mesh.rotation.x += 0.002;
             renderer.render(scene, camera);
         }
 
-        document.getElementById('tech-animation-container').onclick = () => isFast = !isFast;
-        document.getElementById('change-shape-tile').onclick = (e) => {
-            e.preventDefault();
+        document.getElementById('shape-toggle').onclick = () => {
             shapeIdx = (shapeIdx + 1) % geoms.length;
             mesh.geometry = geoms[shapeIdx];
-            localStorage.setItem('anim-shape', shapeIdx);
+            localStorage.setItem('core-shape', shapeIdx);
         };
 
         window.onload = () => {
-            updateUI();
-            setInterval(updateUI, 1000);
-            applyTheme(localStorage.getItem('hub-theme') || 'dark-mode');
+            if(localStorage.getItem('core-theme') === 'light') document.body.classList.add('light-mode');
+            updateClock();
+            updateProgress();
+            setInterval(updateClock, 1000);
             init3D();
         };
     </script>
