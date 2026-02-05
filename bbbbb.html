@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&family=JetBrains+Mono:wght@300;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Standard V4 Dark Colors */
             --bg-deep: #020205;
             --panel-bg: rgba(255, 255, 255, 0.03);
             --sidebar-bg: rgba(255, 255, 255, 0.05);
@@ -18,10 +19,17 @@
             --grid-line: rgba(0, 242, 255, 0.08); 
             --text: #e0e0e0;
             --sidebar-width: 380px;
-            --dot-bg: rgba(255, 255, 255, 0.1); 
+            --dot-bg: rgba(255, 255, 255, 0.1);
+
+            /* LCARS Palette */
+            --lcars-orange: #ff9900;
+            --lcars-gold: #ffcc00;
+            --lcars-violet: #cc99cc;
+            --lcars-blue: #99ccff;
         }
 
-        body.light-mode {
+        /* V4 LIGHT MODE */
+        body.theme-light {
             --bg-deep: #f8fafc;
             --panel-bg: rgba(0, 0, 0, 0.02);
             --sidebar-bg: rgba(255, 255, 255, 0.9);
@@ -30,7 +38,18 @@
             --accent-dim: rgba(37, 99, 235, 0.05);
             --grid-line: rgba(37, 99, 235, 0.1);
             --text: #1e293b;
-            --dot-bg: rgba(0, 0, 0, 0.1); 
+            --dot-bg: rgba(0, 0, 0, 0.1);
+        }
+
+        /* LCARS MODE */
+        body.theme-lcars {
+            --bg-deep: #000000;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --sidebar-bg: #000000;
+            --accent: var(--lcars-orange);
+            --border-glow: rgba(255, 153, 0, 0.3);
+            --text: #ffffff;
+            --dot-bg: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -47,20 +66,24 @@
             height: 100vh;
             display: flex;
             overflow: hidden;
-            transition: all 0.5s ease;
+            transition: all 0.4s ease;
         }
 
+        /* --- Background FX (Nur für V4) --- */
         .bg-fx {
             position: fixed;
             inset: 0;
             z-index: -1;
-            background-color: var(--bg-deep);
             background-image: 
                 radial-gradient(circle at 50% 50%, var(--accent-dim) 0%, transparent 80%),
                 repeating-linear-gradient(0deg, transparent, transparent 1px, var(--grid-line) 1px, var(--grid-line) 2px);
+            background-size: 100% 100%, 100% 4px;
             pointer-events: none;
+            transition: opacity 0.5s;
         }
+        body.theme-lcars .bg-fx { opacity: 0; }
 
+        /* --- Sidebar --- */
         aside {
             width: var(--sidebar-width);
             background: var(--sidebar-bg);
@@ -71,40 +94,50 @@
             padding: 40px;
             justify-content: space-between;
             z-index: 10;
+            transition: border 0.3s;
         }
+        body.theme-lcars aside { border-right: 4px solid var(--lcars-orange); border-radius: 0 0 30px 0; }
 
         .system-info h1 {
             font-size: 0.7rem;
             letter-spacing: 0.6em;
             text-transform: uppercase;
             color: var(--accent);
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        #animation-container {
-            width: 100%;
-            aspect-ratio: 1.5;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        #animation-container, #monitor-panel { display: none; }
+        
+        body.theme-dark #animation-container, 
+        body.theme-light #animation-container { display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1.5; }
+        
+        body.theme-lcars #monitor-panel { display: block; }
 
         #animation-canvas {
             width: 100% !important;
             height: 100% !important;
             filter: drop-shadow(0 0 20px var(--accent-dim));
+            cursor: pointer;
         }
 
-        /* --- Search Section --- */
-        .search-section {
-            margin: 10px 0 20px 0;
+        /* --- Monitor Panel (LCARS) --- */
+        .monitor-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glow);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
         }
-
-        #search-form {
-            width: 100%;
+        .monitor-row { margin-bottom: 12px; }
+        .monitor-label {
+            display: flex; justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+            text-transform: uppercase; margin-bottom: 5px; color: var(--lcars-violet);
         }
+        .bar-outer { width: 100%; height: 14px; background: rgba(255, 255, 255, 0.05); overflow: hidden; }
+        .bar-inner { height: 100%; background: var(--lcars-blue); width: 0%; transition: width 0.6s ease; }
 
+        /* --- Search --- */
         #search-input {
             width: 100%;
             background: var(--panel-bg);
@@ -114,203 +147,143 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             outline: none;
-            transition: all 0.3s ease;
             border-radius: 4px;
-            letter-spacing: 0.05em;
+            transition: 0.3s;
         }
+        #search-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
+        body.theme-lcars #search-input { border-radius: 20px; border-color: var(--lcars-violet); }
 
-        #search-input:focus {
-            border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 15px var(--accent-dim);
-        }
-
-        body.light-mode #search-input:focus {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        .progress-section {
-            margin: 10px 0;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
+        /* --- Progress Section --- */
+        .progress-section { margin: 20px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
         .progress-header {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            opacity: 0.8;
-            display: flex;
-            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+            letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 15px;
+            display: flex; justify-content: space-between;
+            color: var(--text); 
         }
+        body.theme-lcars .progress-header { color: var(--accent); } 
 
-        .dots-grid {
-            display: grid;
-            grid-template-columns: repeat(13, 1fr);
-            gap: 6px;
-            max-width: 100%;
-        }
+        .dots-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 6px; }
+        .dot { width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--dot-bg); }
+        
+        .dot.passed { background: var(--text); box-shadow: 0 0 5px var(--accent-dim); }
+        body.theme-lcars .dot.passed { background: var(--lcars-gold); }
+        body.theme-lcars .dot { border-radius: 2px; }
 
-        .dot {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            background: var(--dot-bg); 
-            transition: all 0.3s ease;
+        .progress-stats { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 0.6rem; 
+            margin-top: 15px; 
+            opacity: 0.5; 
+            text-align: center; 
+            color: var(--text);
         }
+        body.theme-lcars .progress-stats { color: var(--lcars-violet); opacity: 1; }
 
-        .dot.passed {
-            background: var(--text);
-            box-shadow: 0 0 5px var(--accent-dim);
+        /* --- Clock --- */
+        .clock-section { font-family: 'JetBrains Mono', monospace; }
+        #time { font-size: 4.2rem; font-weight: 700; line-height: 1; color: var(--text); letter-spacing: -2px; }
+        body.theme-lcars #time { color: var(--lcars-gold); }
+        
+        #date { 
+            font-size: 0.8rem; 
+            letter-spacing: 0.2em; 
+            text-transform: uppercase; 
+            opacity: 0.6; 
+            color: var(--text); 
         }
+        body.theme-dark #date { color: var(--accent); opacity: 0.8; } 
+        body.theme-lcars #date { color: var(--lcars-blue); opacity: 1; }
 
-        .progress-stats {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            margin-top: 15px;
-            opacity: 0.5;
-            text-align: center;
-        }
-
-        .clock-section {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        #time {
-            font-size: 4.2rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 10px;
-            letter-spacing: -2px;
-        }
-
-        #date {
-            font-size: 0.8rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            opacity: 0.6;
-        }
-
-        main {
-            flex: 1;
-            padding: 60px;
-            overflow-y: auto;
-            display: flex;
-            justify-content: center; 
-            align-items: center; 
-        }
-
-        .content-limiter {
-            width: 100%;
-            max-width: 1100px; 
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 60px 50px; 
-        }
+        /* --- Main Content --- */
+        main { flex: 1; padding: 60px; overflow-y: auto; display: flex; justify-content: center; align-items: center; }
+        .content-limiter { width: 100%; max-width: 1100px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px 50px; }
 
         .category-group {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 20px; 
         }
 
         .category-group h2 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.4em;
-            color: var(--accent);
-            border-left: 3px solid var(--accent);
-            padding-left: 15px;
-            margin-bottom: 10px;
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.4em; color: var(--accent);
+            border-left: 3px solid var(--accent); padding-left: 15px; margin-bottom: 10px;
         }
+        body.theme-lcars .category-group h2 { background: var(--lcars-orange); color: black; border: none; border-radius: 0 10px 10px 0; padding: 2px 15px; }
 
-        .tiles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-        }
+        .tiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 
         .tile {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            padding: 25px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            background: var(--panel-bg); border: 1px solid var(--border-glow);
+            padding: 25px 15px; border-radius: 4px; text-decoration: none; color: var(--text);
+            display: flex; flex-direction: column; align-items: center; gap: 15px; 
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        background-color 0.2s ease, 
+                        border-color 0.2s ease,
+                        box-shadow 0.2s ease;
             backdrop-filter: blur(10px);
         }
-
-        .tile:hover {
-            transform: translateY(-5px);
-            background-color: var(--accent-dim);
+        
+        .tile:hover { 
+            transform: scale(1.03); 
+            background-color: var(--accent-dim); 
             border-color: var(--accent);
-            box-shadow: 0 10px 25px -5px rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 25px var(--accent-dim);
+        }
+
+        body.theme-lcars .tile { border: none; border-left: 4px solid var(--lcars-blue); transform: none; }
+        body.theme-lcars .tile:hover { 
+            border-left-color: var(--lcars-gold); 
+            transform: translateX(5px); 
+            background-color: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
         }
 
         .tile .icon { font-size: 2rem; }
-        .tile .label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            opacity: 0.8;
-        }
-
+        .tile .label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.8; }
         .tile:hover .label { color: var(--accent); opacity: 1; }
 
-        .controls {
-            position: fixed;
-            top: 30px;
-            right: 40px;
-            display: flex;
-            gap: 15px;
-            z-index: 100;
-        }
-
+        /* --- Controls --- */
+        .controls { position: fixed; top: 30px; right: 40px; z-index: 100; display: flex; gap: 15px; }
         .ctrl-btn {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            color: var(--text);
-            padding: 10px 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s;
-            backdrop-filter: blur(10px);
+            background: var(--panel-bg); border: 1px solid var(--border-glow); color: var(--text);
+            padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+            text-transform: uppercase; cursor: pointer; transition: 0.3s; border-radius: 4px;
         }
-
-        .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--border-glow); }
+        body.theme-lcars .ctrl-btn { background: var(--lcars-violet); color: black; border-radius: 10px; font-weight: 700; border: none; }
     </style>
 </head>
-<body class="dark-mode">
+<body class="theme-dark">
 
     <div class="bg-fx"></div>
 
     <aside>
         <div class="system-info">
-            <h1>CORE_INTERFACE_V4</h1>
+            <h1 id="sys-title">CORE_INTERFACE_V4</h1>
+            
             <div id="animation-container">
                 <canvas id="animation-canvas"></canvas>
             </div>
+
+            <div id="monitor-panel" class="monitor-panel">
+                <div class="monitor-row">
+                    <div class="monitor-label"><span>CPU_PRI</span><span id="cpu-val">..</span></div>
+                    <div class="bar-outer"><div id="cpu-bar" class="bar-inner" style="background: var(--lcars-orange)"></div></div>
+                </div>
+                <div class="monitor-row">
+                    <div class="monitor-label"><span>MEM_COR</span><span id="mem-val">..</span></div>
+                    <div class="bar-outer"><div id="mem-bar" class="bar-inner" style="background: var(--lcars-violet)"></div></div>
+                </div>
+                <div class="monitor-row">
+                    <div class="monitor-label"><span>NET_SUB</span><span id="net-val">..</span></div>
+                    <div class="bar-outer"><div id="net-bar" class="bar-inner" style="background: var(--lcars-blue)"></div></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Google Suchfeld Bereich -->
         <div class="search-section">
             <form id="search-form">
-                <input type="text" id="search-input" placeholder="GOOGLE_SEARCH..." autocomplete="off">
+                <input type="text" id="search-input" placeholder="SYSTEM_SEARCH..." autocomplete="off">
             </form>
         </div>
 
@@ -320,9 +293,7 @@
                 <span id="progress-percentage">0%</span>
             </div>
             <div class="dots-grid" id="dots-grid"></div>
-            <div class="progress-stats" id="progress-stats">
-                0 TAGE VERGANGEN · 0 VERBLEIBEND
-            </div>
+            <div class="progress-stats" id="progress-stats">0 / 0</div>
         </div>
 
         <div class="clock-section">
@@ -332,14 +303,13 @@
     </aside>
 
     <div class="controls">
-        <button class="ctrl-btn" id="shape-toggle">Switch_Geometry</button>
-        <button class="ctrl-btn" id="theme-toggle">Toggle_Mode</button>
+        <button class="ctrl-btn" id="mode-switch">Mode: NIGHT_PROTOCOL</button>
     </div>
 
     <main>
         <div class="content-limiter">
             <section class="category-group">
-                <h2>01 // COMMUNICATION</h2>
+                <h2 id="cat-1">01 // COMMUNICATION</h2>
                 <div class="tiles-grid">
                     <a href="https://www.icloud.com/mail/" target="_blank" class="tile">
                         <span class="icon">📧</span><span class="label">iCloud</span>
@@ -354,7 +324,7 @@
             </section>
 
             <section class="category-group">
-                <h2>02 // INTELLIGENCE</h2>
+                <h2 id="cat-2">02 // INTELLIGENCE</h2>
                 <div class="tiles-grid">
                     <a href="https://chat.openai.com/" target="_blank" class="tile">
                         <span class="icon">🤖</span><span class="label">ChatGPT</span>
@@ -369,7 +339,7 @@
             </section>
 
             <section class="category-group">
-                <h2>03 // OPERATIONS</h2>
+                <h2 id="cat-3">03 // OPERATIONS</h2>
                 <div class="tiles-grid">
                     <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile">
                         <span class="icon">📖</span><span class="label">Wiki</span>
@@ -384,7 +354,7 @@
             </section>
 
             <section class="category-group">
-                <h2>04 // EXTERNAL_NODES</h2>
+                <h2 id="cat-4">04 // EXTERNAL_NODES</h2>
                 <div class="tiles-grid">
                     <a href="https://news.google.com/" target="_blank" class="tile">
                         <span class="icon">📰</span><span class="label">News</span>
@@ -402,27 +372,25 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Uhrzeit aktualisieren
+        let scene, camera, renderer, mesh;
+        const themes = ['theme-dark', 'theme-light', 'theme-lcars'];
+        const themeLabels = ['NIGHT_PROTOCOL', 'DAYLIGHT', 'LCARS_INTERFACE'];
+        let currentThemeIdx = themes.indexOf(localStorage.getItem('heiko-theme-v5') || 'theme-dark');
+        
+        let shapeIdx = parseInt(localStorage.getItem('heiko-shape-v4') || '0');
+        const geoms = [
+            new THREE.TorusKnotGeometry(1.2, 0.4, 120, 20),
+            new THREE.IcosahedronGeometry(1.8, 1),
+            new THREE.DodecahedronGeometry(1.8, 0),
+            new THREE.TorusGeometry(1.4, 0.3, 16, 100)
+        ];
+
         function updateClock() {
             const now = new Date();
             document.getElementById('time').textContent = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
             document.getElementById('date').textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
         }
 
-        // Suche Logik
-        const searchForm = document.getElementById('search-form');
-        const searchInput = document.getElementById('search-input');
-        searchForm.onsubmit = (e) => {
-            e.preventDefault();
-            const query = searchInput.value.trim();
-            if (query) {
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                searchInput.value = ''; // Feld leeren
-                searchInput.blur(); // Fokus entfernen
-            }
-        };
-
-        // Jahresfortschritt aktualisieren
         function updateProgress() {
             const now = new Date();
             const year = now.getFullYear();
@@ -431,8 +399,7 @@
             const todayStart = new Date(year, now.getMonth(), now.getDate());
             const totalDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
             const fullyPassedDays = Math.round((todayStart - start) / (1000 * 60 * 60 * 24));
-            const currentDayNumber = fullyPassedDays + 1;
-            const remainingAfterToday = totalDays - currentDayNumber;
+            const remainingAfterToday = totalDays - (fullyPassedDays + 1);
             const percentage = ((fullyPassedDays / totalDays) * 100).toFixed(1);
             
             document.getElementById('progress-year').textContent = year;
@@ -441,10 +408,8 @@
 
             const dotsGrid = document.getElementById('dots-grid');
             dotsGrid.innerHTML = '';
-            
             const totalDots = 52; 
             const passedDots = Math.floor((fullyPassedDays / totalDays) * totalDots);
-
             for (let i = 0; i < totalDots; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'dot' + (i < passedDots ? ' passed' : '');
@@ -452,30 +417,16 @@
             }
         }
 
-        const themeBtn = document.getElementById('theme-toggle');
-        themeBtn.onclick = () => {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            localStorage.setItem('core-theme', isLight ? 'light' : 'dark');
-            updateAnimationColor();
-        };
-
-        let scene, camera, renderer, mesh;
-        let shapeIdx = parseInt(localStorage.getItem('core-shape') || '0');
-        const geoms = [
-            new THREE.TorusKnotGeometry(1.2, 0.4, 120, 20),
-            new THREE.IcosahedronGeometry(1.8, 1),
-            new THREE.DodecahedronGeometry(1.8, 0),
-            new THREE.TorusGeometry(1.4, 0.3, 16, 100)
-        ];
-
         function init3D() {
             const container = document.getElementById('animation-container');
             const canvas = document.getElementById('animation-canvas');
+            if (!container || !canvas) return;
+
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(container.clientWidth, container.clientHeight);
             
             const material = new THREE.MeshStandardMaterial({ wireframe: true, transparent: true, opacity: 0.6 });
             mesh = new THREE.Mesh(geoms[shapeIdx], material);
@@ -486,35 +437,84 @@
             scene.add(pLight, new THREE.AmbientLight(0xffffff, 0.5));
 
             camera.position.z = 4.5;
-            renderer.setSize(container.clientWidth, container.clientHeight);
             updateAnimationColor();
-            animate();
+            animate3D();
+
+            canvas.onclick = switchGeometry;
+        }
+
+        function switchGeometry() {
+            shapeIdx = (shapeIdx + 1) % geoms.length;
+            mesh.geometry = geoms[shapeIdx];
+            localStorage.setItem('heiko-shape-v4', shapeIdx);
         }
 
         function updateAnimationColor() {
+            if (!mesh) return;
             const accent = getComputedStyle(document.body).getPropertyValue('--accent').trim();
             mesh.material.color.set(accent);
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            mesh.rotation.y += 0.005;
-            mesh.rotation.x += 0.002;
-            renderer.render(scene, camera);
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            if (mesh && (document.body.classList.contains('theme-dark') || document.body.classList.contains('theme-light'))) {
+                mesh.rotation.y += 0.005;
+                mesh.rotation.x += 0.002;
+                renderer.render(scene, camera);
+            }
         }
 
-        document.getElementById('shape-toggle').onclick = () => {
-            shapeIdx = (shapeIdx + 1) % geoms.length;
-            mesh.geometry = geoms[shapeIdx];
-            localStorage.setItem('core-shape', shapeIdx);
-        };
+        function updateMonitor() {
+            if (!document.body.classList.contains('theme-lcars')) return;
+            const cpu = Math.floor(Math.random() * 30) + 5;
+            const mem = Math.floor(Math.random() * 15) + 60;
+            const net = Math.floor(Math.random() * 80) + 1;
+            document.getElementById('cpu-val').textContent = cpu + '%';
+            document.getElementById('cpu-bar').style.width = cpu + '%';
+            document.getElementById('mem-val').textContent = mem + '%';
+            document.getElementById('mem-bar').style.width = mem + '%';
+            document.getElementById('net-val').textContent = net + '%';
+            document.getElementById('net-bar').style.width = net + '%';
+        }
+
+        function applyTheme(idx) {
+            if (idx === -1) idx = 0;
+            document.body.classList.remove(...themes);
+            document.body.classList.add(themes[idx]);
+            document.getElementById('mode-switch').textContent = `Mode: ${themeLabels[idx]}`;
+            
+            const isLCARS = themes[idx] === 'theme-lcars';
+            document.getElementById('sys-title').textContent = isLCARS ? 'LCARS_ACCESS_01' : 'CORE_INTERFACE_V4';
+            document.getElementById('search-input').placeholder = isLCARS ? 'SEARCH_DATABASE...' : 'GOOGLE_SEARCH...';
+
+            localStorage.setItem('heiko-theme-v5', themes[idx]);
+            updateAnimationColor();
+        }
 
         window.onload = () => {
-            if(localStorage.getItem('core-theme') === 'light') document.body.classList.add('light-mode');
+            applyTheme(currentThemeIdx);
             updateClock();
             updateProgress();
-            setInterval(updateClock, 1000);
             init3D();
+            
+            setInterval(updateClock, 1000);
+            setInterval(updateMonitor, 2000);
+
+            document.getElementById('mode-switch').onclick = () => {
+                currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+                applyTheme(currentThemeIdx);
+            };
+
+            const searchForm = document.getElementById('search-form');
+            searchForm.onsubmit = (e) => {
+                e.preventDefault();
+                const q = document.getElementById('search-input').value.trim();
+                if (q) {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank');
+                    document.getElementById('search-input').value = '';
+                    document.getElementById('search-input').blur();
+                }
+            };
         };
     </script>
 </body>
