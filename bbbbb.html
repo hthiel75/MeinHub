@@ -96,8 +96,41 @@
             filter: drop-shadow(0 0 20px var(--accent-dim));
         }
 
+        /* --- Search Section --- */
+        .search-section {
+            margin: 10px 0 20px 0;
+        }
+
+        #search-form {
+            width: 100%;
+        }
+
+        #search-input {
+            width: 100%;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            padding: 12px 15px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            outline: none;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        #search-input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px var(--accent-dim);
+        }
+
+        body.light-mode #search-input:focus {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
         .progress-section {
-            margin: 20px 0;
+            margin: 10px 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -274,6 +307,13 @@
             </div>
         </div>
 
+        <!-- Google Suchfeld Bereich -->
+        <div class="search-section">
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="GOOGLE_SEARCH..." autocomplete="off">
+            </form>
+        </div>
+
         <div class="progress-section">
             <div class="progress-header">
                 <span id="progress-year">2026</span>
@@ -362,33 +402,37 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        // Uhrzeit aktualisieren
         function updateClock() {
             const now = new Date();
             document.getElementById('time').textContent = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
             document.getElementById('date').textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
         }
 
+        // Suche Logik
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        searchForm.onsubmit = (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                searchInput.value = ''; // Feld leeren
+                searchInput.blur(); // Fokus entfernen
+            }
+        };
+
+        // Jahresfortschritt aktualisieren
         function updateProgress() {
             const now = new Date();
             const year = now.getFullYear();
             const start = new Date(year, 0, 1);
             const end = new Date(year + 1, 0, 1);
-            
-            // Heutiger Tag als Startzeitpunkt (00:00:00)
             const todayStart = new Date(year, now.getMonth(), now.getDate());
-            
-            // Gesamtanzahl Tage im Jahr (z.B. 365)
             const totalDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
-            
-            // Tage die VOR heute vollständig abgeschlossen wurden (z.B. 35 am 05.02.)
             const fullyPassedDays = Math.round((todayStart - start) / (1000 * 60 * 60 * 24));
-            
-            // Der aktuelle Rang des Tages im Jahr (z.B. 36 am 05.02.)
             const currentDayNumber = fullyPassedDays + 1;
-            
-            // Tage die NACH heute noch verbleiben (z.B. 365 - 36 = 329)
             const remainingAfterToday = totalDays - currentDayNumber;
-            
             const percentage = ((fullyPassedDays / totalDays) * 100).toFixed(1);
             
             document.getElementById('progress-year').textContent = year;
