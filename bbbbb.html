@@ -215,7 +215,7 @@
             box-shadow: none;
         }
 
-        /* --- Weather Module (Kompakt Einzeiler) --- */
+        /* --- Weather Module --- */
         .weather-panel {
             margin: 10px 0;
             background: var(--panel-bg);
@@ -379,6 +379,66 @@
             text-transform: uppercase; cursor: pointer; transition: 0.3s; border-radius: 4px;
         }
         body.theme-lcars .ctrl-btn { background: var(--lcars-violet); color: black; border-radius: 10px; font-weight: 700; border: none; }
+
+        /* --- Monitor Overlay --- */
+        #monitor-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            padding: 40px;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .overlay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--accent);
+        }
+        .overlay-title { font-family: 'JetBrains Mono', monospace; color: var(--accent); letter-spacing: 0.2em; }
+        .close-overlay {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 8px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .overlay-content { 
+            flex: 1; 
+            background: #fff; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            border: 4px solid var(--accent); 
+            position: relative;
+        }
+        
+        /* 80% Skalierung für den Inhalt bei vollem Container-Format */
+        .overlay-content iframe { 
+            width: 125%; 
+            height: 125%; 
+            border: none; 
+            transform: scale(0.8); 
+            transform-origin: top left;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        body.theme-lcars .overlay-header { border-bottom: 6px solid var(--lcars-orange); border-radius: 0 0 20px 0; }
+        body.theme-lcars .close-overlay { background: var(--lcars-red); color: white; border-radius: 10px; }
+        body.theme-lcars .overlay-content { border-color: var(--lcars-orange); border-radius: 0 30px 30px 0; }
+
     </style>
 </head>
 <body class="theme-dark">
@@ -423,7 +483,7 @@
 
         <div class="sidebar-divider"></div>
 
-        <!-- Dot Kalender (Jetzt über dem Wetter) -->
+        <!-- Dot Kalender -->
         <div class="progress-section">
             <div class="progress-header">
                 <span id="progress-year">2026</span>
@@ -435,7 +495,7 @@
 
         <div class="sidebar-divider"></div>
 
-        <!-- Wetter Modul (Jetzt unter dem Dot Kalender) -->
+        <!-- Wetter Modul -->
         <div class="weather-panel" id="weather-panel">
             <div class="weather-header">KASSEL // SENSORS</div>
             <div class="weather-grid">
@@ -510,6 +570,9 @@
             <section class="category-group">
                 <h2 id="cat-3">03 // OPERATIONS</h2>
                 <div class="tiles-grid">
+                    <a href="#" class="tile" id="open-rz-monitor">
+                        <span class="icon">🖥️</span><span class="label">RZ_LIVE_MONITOR</span>
+                    </a>
                     <a href="https://wiki.eckd.inhouse.eckd.de/wiki/IT-Systeme_nach_Kunde" target="_blank" class="tile">
                         <span class="icon">📖</span><span class="label">Wiki</span>
                     </a>
@@ -539,6 +602,17 @@
         </div>
     </main>
 
+    <!-- Monitor Overlay -->
+    <div id="monitor-overlay">
+        <div class="overlay-header">
+            <div class="overlay-title">SYSTEM_STREAM // RZ_MONITORING_LIVE</div>
+            <button class="close-overlay" id="close-rz-monitor">EXIT_VIEW</button>
+        </div>
+        <div class="overlay-content">
+            <iframe id="rz-iframe" src="about:blank"></iframe>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         let scene, camera, renderer, mesh;
@@ -553,6 +627,8 @@
             new THREE.DodecahedronGeometry(1.8, 0),
             new THREE.TorusGeometry(1.4, 0.3, 16, 100)
         ];
+
+        const rzUrl = "https://monitoring.eckd-rz.de/public/mapshow.htm?id=70154&mapid=9C5461CA-E409-4CDF-BC20-8B96A8A1C157";
 
         // --- Uhrzeit & Progress ---
         function updateClock() {
@@ -579,7 +655,6 @@
 
             const dotsGrid = document.getElementById('dots-grid');
             dotsGrid.innerHTML = '';
-            
             const totalDots = 52; 
             const currentDotIdx = Math.floor(fullyPassedDays / (totalDays / totalDots));
 
@@ -611,49 +686,39 @@
                 const lat = 51.3127;
                 const lon = 9.4797;
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FBerlin`;
-                
                 const response = await fetch(url);
                 const data = await response.json();
-
                 for (let i = 0; i < 3; i++) {
                     const date = new Date();
                     date.setDate(date.getDate() + i);
                     const dayLabel = date.toLocaleDateString('de-DE', { weekday: 'short' }).toUpperCase();
-                    
                     document.getElementById(`w-day${i}`).textContent = dayLabel;
                     document.getElementById(`w-icon${i}`).textContent = getWeatherIcon(data.daily.weathercode[i]);
                     document.getElementById(`w-hi${i}`).textContent = Math.round(data.daily.temperature_2m_max[i]) + '°';
                     document.getElementById(`w-lo${i}`).textContent = Math.round(data.daily.temperature_2m_min[i]) + '°';
                 }
-            } catch (e) {
-                console.error("Weather Sync Failed");
-            }
+            } catch (e) {}
         }
 
-        // --- 3D Animation (V4) ---
+        // --- 3D Animation ---
         function init3D() {
             const container = document.getElementById('animation-container');
             const canvas = document.getElementById('animation-canvas');
             if (!container || !canvas) return;
-
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(container.clientWidth, container.clientHeight);
-            
             const material = new THREE.MeshStandardMaterial({ wireframe: true, transparent: true, opacity: 0.6 });
             mesh = new THREE.Mesh(geoms[shapeIdx], material);
             scene.add(mesh);
-
             const pLight = new THREE.PointLight(0xffffff, 2);
             pLight.position.set(5, 5, 5);
             scene.add(pLight, new THREE.AmbientLight(0xffffff, 0.5));
-
             camera.position.z = 4.5;
             updateAnimationColor();
             animate3D();
-
             canvas.onclick = () => {
                 shapeIdx = (shapeIdx + 1) % geoms.length;
                 mesh.geometry = geoms[shapeIdx];
@@ -676,6 +741,19 @@
             }
         }
 
+        // --- Monitoring Logic ---
+        const overlay = document.getElementById('monitor-overlay');
+        const iframe = document.getElementById('rz-iframe');
+        document.getElementById('open-rz-monitor').onclick = (e) => {
+            e.preventDefault();
+            iframe.src = rzUrl;
+            overlay.style.display = 'flex';
+        };
+        document.getElementById('close-rz-monitor').onclick = () => {
+            overlay.style.display = 'none';
+            iframe.src = 'about:blank';
+        };
+
         // --- Monitor Simulation (LCARS) ---
         function updateMonitor() {
             if (!document.body.classList.contains('theme-lcars')) return;
@@ -695,11 +773,9 @@
             document.body.classList.remove(...themes);
             document.body.classList.add(themes[idx]);
             document.getElementById('mode-switch').textContent = `Mode: ${themeLabels[idx]}`;
-            
             const isLCARS = themes[idx] === 'theme-lcars';
             document.getElementById('sys-title').textContent = isLCARS ? 'LCARS_ACCESS_01' : 'THIEL_INTERFACE_V4';
             document.getElementById('search-input').placeholder = isLCARS ? 'SEARCH_DATABASE...' : 'GOOGLE_SEARCH...';
-
             localStorage.setItem('heiko-theme-v5', themes[idx]);
             updateAnimationColor();
         }
@@ -710,16 +786,13 @@
             updateProgress();
             updateWeather();
             init3D();
-            
             setInterval(updateClock, 1000);
             setInterval(updateMonitor, 4500);
             setInterval(updateWeather, 1800000);
-
             document.getElementById('mode-switch').onclick = () => {
                 currentThemeIdx = (currentThemeIdx + 1) % themes.length;
                 applyTheme(currentThemeIdx);
             };
-
             const searchForm = document.getElementById('search-form');
             searchForm.onsubmit = (e) => {
                 e.preventDefault();
