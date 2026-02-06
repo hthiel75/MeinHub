@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEIKO | CORE INTERFACE</title>
+    <title>HEIKO | THIEL INTERFACE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&family=JetBrains+Mono:wght@300;700&display=swap" rel="stylesheet">
@@ -26,6 +26,7 @@
             --lcars-gold: #ffcc00;
             --lcars-violet: #cc99cc;
             --lcars-blue: #99ccff;
+            --lcars-red: #cc6666;
         }
 
         /* V4 LIGHT MODE */
@@ -120,7 +121,7 @@
             cursor: pointer;
         }
 
-        /* --- Monitor Panel (LCARS) --- */
+        /* --- Monitor Panel (LCARS) - Beruhigte Animation --- */
         .monitor-panel {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--border-glow);
@@ -135,7 +136,12 @@
             text-transform: uppercase; margin-bottom: 5px; color: var(--lcars-violet);
         }
         .bar-outer { width: 100%; height: 14px; background: rgba(255, 255, 255, 0.05); overflow: hidden; }
-        .bar-inner { height: 100%; background: var(--lcars-blue); width: 0%; transition: width 0.6s ease; }
+        .bar-inner { 
+            height: 100%; 
+            background: var(--lcars-blue); 
+            width: 0%; 
+            transition: width 2.5s ease-in-out; 
+        }
 
         /* --- Search & Agent --- */
         .search-section {
@@ -206,10 +212,18 @@
         body.theme-lcars .progress-header { color: var(--accent); } 
 
         .dots-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 6px; }
-        .dot { width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--dot-bg); }
+        .dot { width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--dot-bg); transition: background 0.3s, box-shadow 0.3s; }
         
         .dot.passed { background: var(--text); box-shadow: 0 0 5px var(--accent-dim); }
+        
+        /* Akzentuierung des aktuellen Wochendots */
+        .dot.current { 
+            background: #ff4444 !important; 
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5) !important;
+        }
+
         body.theme-lcars .dot.passed { background: var(--lcars-gold); }
+        body.theme-lcars .dot.current { background: var(--lcars-red) !important; }
         body.theme-lcars .dot { border-radius: 2px; }
 
         .progress-stats { 
@@ -301,7 +315,7 @@
 
     <aside>
         <div class="system-info">
-            <h1 id="sys-title">CORE_INTERFACE_V4</h1>
+            <h1 id="sys-title">THIEL_INTERFACE_V4</h1>
             
             <div id="animation-container">
                 <canvas id="animation-canvas"></canvas>
@@ -443,6 +457,7 @@
             const start = new Date(year, 0, 1);
             const end = new Date(year + 1, 0, 1);
             const todayStart = new Date(year, now.getMonth(), now.getDate());
+            
             const totalDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
             const fullyPassedDays = Math.round((todayStart - start) / (1000 * 60 * 60 * 24));
             const remainingAfterToday = totalDays - (fullyPassedDays + 1);
@@ -454,11 +469,21 @@
 
             const dotsGrid = document.getElementById('dots-grid');
             dotsGrid.innerHTML = '';
+            
             const totalDots = 52; 
-            const passedDots = Math.floor((fullyPassedDays / totalDays) * totalDots);
+            const currentDotIdx = Math.floor(fullyPassedDays / (totalDays / totalDots));
+
             for (let i = 0; i < totalDots; i++) {
                 const dot = document.createElement('div');
-                dot.className = 'dot' + (i < passedDots ? ' passed' : '');
+                let className = 'dot';
+                
+                if (i < currentDotIdx) {
+                    className += ' passed';
+                } else if (i === currentDotIdx) {
+                    className += ' current';
+                }
+                
+                dot.className = className;
                 dotsGrid.appendChild(dot);
             }
         }
@@ -512,9 +537,10 @@
 
         function updateMonitor() {
             if (!document.body.classList.contains('theme-lcars')) return;
-            const cpu = Math.floor(Math.random() * 30) + 5;
-            const mem = Math.floor(Math.random() * 15) + 60;
-            const net = Math.floor(Math.random() * 80) + 1;
+            const cpu = Math.floor(Math.random() * 20) + 10;
+            const mem = Math.floor(Math.random() * 10) + 55;
+            const net = Math.floor(Math.random() * 40) + 5;
+            
             document.getElementById('cpu-val').textContent = cpu + '%';
             document.getElementById('cpu-bar').style.width = cpu + '%';
             document.getElementById('mem-val').textContent = mem + '%';
@@ -530,7 +556,7 @@
             document.getElementById('mode-switch').textContent = `Mode: ${themeLabels[idx]}`;
             
             const isLCARS = themes[idx] === 'theme-lcars';
-            document.getElementById('sys-title').textContent = isLCARS ? 'LCARS_ACCESS_01' : 'CORE_INTERFACE_V4';
+            document.getElementById('sys-title').textContent = isLCARS ? 'LCARS_ACCESS_01' : 'THIEL_INTERFACE_V4';
             document.getElementById('search-input').placeholder = isLCARS ? 'SEARCH_DATABASE...' : 'GOOGLE_SEARCH...';
 
             localStorage.setItem('heiko-theme-v5', themes[idx]);
@@ -544,7 +570,7 @@
             init3D();
             
             setInterval(updateClock, 1000);
-            setInterval(updateMonitor, 2000);
+            setInterval(updateMonitor, 4500);
 
             document.getElementById('mode-switch').onclick = () => {
                 currentThemeIdx = (currentThemeIdx + 1) % themes.length;
