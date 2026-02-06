@@ -121,6 +121,20 @@
             cursor: pointer;
         }
 
+        /* --- Trennlinien --- */
+        .sidebar-divider {
+            height: 1px;
+            background: var(--border-glow);
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+        body.theme-lcars .sidebar-divider {
+            height: 4px;
+            background: var(--lcars-violet);
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
         /* --- Monitor Panel (LCARS) --- */
         .monitor-panel {
             background: rgba(0, 0, 0, 0.4);
@@ -203,7 +217,7 @@
 
         /* --- Weather Module (Kompakt Einzeiler) --- */
         .weather-panel {
-            margin: 20px 0;
+            margin: 10px 0;
             background: var(--panel-bg);
             border: 1px solid var(--border-glow);
             border-radius: 4px;
@@ -295,8 +309,7 @@
         body.theme-lcars .progress-stats { color: var(--lcars-violet); opacity: 1; }
 
         /* --- Clock --- */
-        .clock-section { font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border-glow); padding-top: 15px; }
-        body.theme-lcars .clock-section { border-top: 4px solid var(--lcars-orange); }
+        .clock-section { font-family: 'JetBrains Mono', monospace; padding-top: 5px; }
         #time { font-size: 4.2rem; font-weight: 700; line-height: 1; color: var(--text); letter-spacing: -2px; }
         body.theme-lcars #time { color: var(--lcars-gold); }
         
@@ -396,6 +409,8 @@
             </div>
         </div>
 
+        <div class="sidebar-divider"></div>
+
         <div class="search-section">
             <form id="search-form">
                 <input type="text" id="search-input" placeholder="SYSTEM_SEARCH..." autocomplete="off">
@@ -406,11 +421,12 @@
             </a>
         </div>
 
+        <div class="sidebar-divider"></div>
+
         <!-- Wetter Modul (Kompakt Einzeiler) -->
         <div class="weather-panel" id="weather-panel">
             <div class="weather-header">KASSEL // SENSORS</div>
             <div class="weather-grid">
-                <!-- Tag 0 (Aktuell) -->
                 <div class="weather-col">
                     <span class="weather-day" id="w-day0">--</span>
                     <span class="weather-icon" id="w-icon0">--</span>
@@ -418,7 +434,6 @@
                         <span class="temp-hi" id="w-hi0">--</span><span class="temp-divider">|</span><span class="temp-lo" id="w-lo0">--</span>
                     </div>
                 </div>
-                <!-- Tag 1 (Morgen) -->
                 <div class="weather-col">
                     <span class="weather-day" id="w-day1">--</span>
                     <span class="weather-icon" id="w-icon1">--</span>
@@ -426,7 +441,6 @@
                         <span class="temp-hi" id="w-hi1">--</span><span class="temp-divider">|</span><span class="temp-lo" id="w-lo1">--</span>
                     </div>
                 </div>
-                <!-- Tag 2 (Übermorgen) -->
                 <div class="weather-col">
                     <span class="weather-day" id="w-day2">--</span>
                     <span class="weather-icon" id="w-icon2">--</span>
@@ -437,6 +451,8 @@
             </div>
         </div>
 
+        <div class="sidebar-divider"></div>
+
         <div class="progress-section">
             <div class="progress-header">
                 <span id="progress-year">2026</span>
@@ -445,6 +461,8 @@
             <div class="dots-grid" id="dots-grid"></div>
             <div class="progress-stats" id="progress-stats">0 / 0</div>
         </div>
+
+        <div class="sidebar-divider"></div>
 
         <div class="clock-section">
             <div id="time">00:00:00</div>
@@ -599,7 +617,6 @@
                 for (let i = 0; i < 3; i++) {
                     const date = new Date();
                     date.setDate(date.getDate() + i);
-                    // Den aktuellen Wochentag für alle Spalten berechnen (kein "HEU.")
                     const dayLabel = date.toLocaleDateString('de-DE', { weekday: 'short' }).toUpperCase();
                     
                     document.getElementById(`w-day${i}`).textContent = dayLabel;
@@ -695,7 +712,7 @@
             
             setInterval(updateClock, 1000);
             setInterval(updateMonitor, 4500);
-            setInterval(updateWeather, 1800000); // Alle 30 Min Wetter-Update
+            setInterval(updateWeather, 1800000);
 
             document.getElementById('mode-switch').onclick = () => {
                 currentThemeIdx = (currentThemeIdx + 1) % themes.length;
