@@ -70,7 +70,7 @@
             transition: all 0.4s ease;
         }
 
-        /* --- Background FX (Nur für V4) --- */
+        /* --- Background FX --- */
         .bg-fx {
             position: fixed;
             inset: 0;
@@ -121,7 +121,7 @@
             cursor: pointer;
         }
 
-        /* --- Monitor Panel (LCARS) - Beruhigte Animation --- */
+        /* --- Monitor Panel (LCARS) --- */
         .monitor-panel {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--border-glow);
@@ -201,8 +201,68 @@
             box-shadow: none;
         }
 
+        /* --- Weather Module (Kompakt Einzeiler) --- */
+        .weather-panel {
+            margin: 20px 0;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: 0.3s;
+        }
+        body.theme-lcars .weather-panel {
+            border: none;
+            border-left: 4px solid var(--lcars-orange);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0 15px 15px 0;
+        }
+
+        .weather-header {
+            font-size: 0.6rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            opacity: 0.6;
+        }
+        body.theme-lcars .weather-header { color: var(--lcars-gold); opacity: 1; }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .weather-col {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .weather-day {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        .weather-icon {
+            font-size: 1.4rem;
+            margin: 2px 0;
+        }
+        .weather-temps {
+            font-size: 0.65rem;
+            white-space: nowrap;
+        }
+        .temp-hi { font-weight: 700; color: var(--text); }
+        .temp-divider { opacity: 0.3; margin: 0 2px; }
+        .temp-lo { opacity: 0.6; }
+
+        body.theme-lcars .temp-hi { color: var(--lcars-gold); }
+        body.theme-lcars .temp-lo { color: var(--lcars-blue); }
+
         /* --- Progress Section --- */
-        .progress-section { margin: 20px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .progress-section { margin: 10px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
         .progress-header {
             font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
             letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 15px;
@@ -215,8 +275,6 @@
         .dot { width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--dot-bg); transition: background 0.3s, box-shadow 0.3s; }
         
         .dot.passed { background: var(--text); box-shadow: 0 0 5px var(--accent-dim); }
-        
-        /* Akzentuierung des aktuellen Wochendots */
         .dot.current { 
             background: #ff4444 !important; 
             box-shadow: 0 0 10px rgba(255, 68, 68, 0.5) !important;
@@ -237,7 +295,8 @@
         body.theme-lcars .progress-stats { color: var(--lcars-violet); opacity: 1; }
 
         /* --- Clock --- */
-        .clock-section { font-family: 'JetBrains Mono', monospace; }
+        .clock-section { font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border-glow); padding-top: 15px; }
+        body.theme-lcars .clock-section { border-top: 4px solid var(--lcars-orange); }
         #time { font-size: 4.2rem; font-weight: 700; line-height: 1; color: var(--text); letter-spacing: -2px; }
         body.theme-lcars #time { color: var(--lcars-gold); }
         
@@ -347,6 +406,37 @@
             </a>
         </div>
 
+        <!-- Wetter Modul (Kompakt Einzeiler) -->
+        <div class="weather-panel" id="weather-panel">
+            <div class="weather-header">KASSEL // SENSORS</div>
+            <div class="weather-grid">
+                <!-- Tag 0 (Aktuell) -->
+                <div class="weather-col">
+                    <span class="weather-day" id="w-day0">--</span>
+                    <span class="weather-icon" id="w-icon0">--</span>
+                    <div class="weather-temps">
+                        <span class="temp-hi" id="w-hi0">--</span><span class="temp-divider">|</span><span class="temp-lo" id="w-lo0">--</span>
+                    </div>
+                </div>
+                <!-- Tag 1 (Morgen) -->
+                <div class="weather-col">
+                    <span class="weather-day" id="w-day1">--</span>
+                    <span class="weather-icon" id="w-icon1">--</span>
+                    <div class="weather-temps">
+                        <span class="temp-hi" id="w-hi1">--</span><span class="temp-divider">|</span><span class="temp-lo" id="w-lo1">--</span>
+                    </div>
+                </div>
+                <!-- Tag 2 (Übermorgen) -->
+                <div class="weather-col">
+                    <span class="weather-day" id="w-day2">--</span>
+                    <span class="weather-icon" id="w-icon2">--</span>
+                    <div class="weather-temps">
+                        <span class="temp-hi" id="w-hi2">--</span><span class="temp-divider">|</span><span class="temp-lo" id="w-lo2">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="progress-section">
             <div class="progress-header">
                 <span id="progress-year">2026</span>
@@ -445,6 +535,7 @@
             new THREE.TorusGeometry(1.4, 0.3, 16, 100)
         ];
 
+        // --- Uhrzeit & Progress ---
         function updateClock() {
             const now = new Date();
             document.getElementById('time').textContent = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
@@ -476,18 +567,52 @@
             for (let i = 0; i < totalDots; i++) {
                 const dot = document.createElement('div');
                 let className = 'dot';
-                
-                if (i < currentDotIdx) {
-                    className += ' passed';
-                } else if (i === currentDotIdx) {
-                    className += ' current';
-                }
-                
+                if (i < currentDotIdx) className += ' passed';
+                else if (i === currentDotIdx) className += ' current';
                 dot.className = className;
                 dotsGrid.appendChild(dot);
             }
         }
 
+        // --- Wetter Logik ---
+        function getWeatherIcon(code) {
+            if (code === 0) return '☀️';
+            if (code <= 3) return '⛅';
+            if (code <= 48) return '🌫️';
+            if (code <= 55) return '🌦️';
+            if (code <= 65) return '🌧️';
+            if (code <= 77) return '🌨️';
+            if (code <= 82) return '🌦️';
+            if (code <= 99) return '⛈️';
+            return '❓';
+        }
+
+        async function updateWeather() {
+            try {
+                const lat = 51.3127;
+                const lon = 9.4797;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FBerlin`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
+                for (let i = 0; i < 3; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() + i);
+                    // Den aktuellen Wochentag für alle Spalten berechnen (kein "HEU.")
+                    const dayLabel = date.toLocaleDateString('de-DE', { weekday: 'short' }).toUpperCase();
+                    
+                    document.getElementById(`w-day${i}`).textContent = dayLabel;
+                    document.getElementById(`w-icon${i}`).textContent = getWeatherIcon(data.daily.weathercode[i]);
+                    document.getElementById(`w-hi${i}`).textContent = Math.round(data.daily.temperature_2m_max[i]) + '°';
+                    document.getElementById(`w-lo${i}`).textContent = Math.round(data.daily.temperature_2m_min[i]) + '°';
+                }
+            } catch (e) {
+                console.error("Weather Sync Failed");
+            }
+        }
+
+        // --- 3D Animation (V4) ---
         function init3D() {
             const container = document.getElementById('animation-container');
             const canvas = document.getElementById('animation-canvas');
@@ -511,13 +636,11 @@
             updateAnimationColor();
             animate3D();
 
-            canvas.onclick = switchGeometry;
-        }
-
-        function switchGeometry() {
-            shapeIdx = (shapeIdx + 1) % geoms.length;
-            mesh.geometry = geoms[shapeIdx];
-            localStorage.setItem('heiko-shape-v4', shapeIdx);
+            canvas.onclick = () => {
+                shapeIdx = (shapeIdx + 1) % geoms.length;
+                mesh.geometry = geoms[shapeIdx];
+                localStorage.setItem('heiko-shape-v4', shapeIdx);
+            };
         }
 
         function updateAnimationColor() {
@@ -535,12 +658,12 @@
             }
         }
 
+        // --- Monitor Simulation (LCARS) ---
         function updateMonitor() {
             if (!document.body.classList.contains('theme-lcars')) return;
             const cpu = Math.floor(Math.random() * 20) + 10;
             const mem = Math.floor(Math.random() * 10) + 55;
             const net = Math.floor(Math.random() * 40) + 5;
-            
             document.getElementById('cpu-val').textContent = cpu + '%';
             document.getElementById('cpu-bar').style.width = cpu + '%';
             document.getElementById('mem-val').textContent = mem + '%';
@@ -567,10 +690,12 @@
             applyTheme(currentThemeIdx);
             updateClock();
             updateProgress();
+            updateWeather();
             init3D();
             
             setInterval(updateClock, 1000);
             setInterval(updateMonitor, 4500);
+            setInterval(updateWeather, 1800000); // Alle 30 Min Wetter-Update
 
             document.getElementById('mode-switch').onclick = () => {
                 currentThemeIdx = (currentThemeIdx + 1) % themes.length;
