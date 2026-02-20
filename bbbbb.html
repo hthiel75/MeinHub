@@ -371,14 +371,51 @@
         .tile .label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.8; }
         .tile:hover .label { color: var(--accent); opacity: 1; }
 
-        /* --- Controls --- */
-        .controls { position: fixed; top: 30px; right: 40px; z-index: 100; display: flex; gap: 15px; }
+        /* --- Status Controls Section (Neu) --- */
+        .controls { 
+            position: fixed; 
+            top: 30px; 
+            right: 40px; 
+            z-index: 100; 
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+        }
+        
+        /* Tenure Badge Styling */
+        .tenure-badge {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .tenure-label { color: var(--accent); opacity: 0.8; letter-spacing: 0.1em; }
+        .tenure-num { font-weight: 700; color: var(--text); }
+        .tenure-unit { opacity: 0.5; margin-left: 1px; font-size: 0.55rem; }
+
+        body.theme-lcars .tenure-badge {
+            border: none;
+            background: var(--lcars-blue);
+            color: black;
+            font-weight: 700;
+            border-radius: 10px 0 0 10px;
+        }
+        body.theme-lcars .tenure-label { color: black; opacity: 0.6; }
+        body.theme-lcars .tenure-num { color: black; }
+
         .ctrl-btn {
             background: var(--panel-bg); border: 1px solid var(--border-glow); color: var(--text);
             padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
             text-transform: uppercase; cursor: pointer; transition: 0.3s; border-radius: 4px;
         }
-        body.theme-lcars .ctrl-btn { background: var(--lcars-violet); color: black; border-radius: 10px; font-weight: 700; border: none; }
+        body.theme-lcars .ctrl-btn { background: var(--lcars-violet); color: black; border-radius: 0 10px 10px 0; font-weight: 700; border: none; }
 
         /* --- Monitor Overlay --- */
         #monitor-overlay {
@@ -423,7 +460,6 @@
             position: relative;
         }
         
-        /* 80% Skalierung für den Inhalt bei vollem Container-Format */
         .overlay-content iframe { 
             width: 125%; 
             height: 125%; 
@@ -531,12 +567,20 @@
         </div>
     </aside>
 
+    <!-- Controls & Tenure Status -->
     <div class="controls">
+        <div class="tenure-badge">
+            <span class="tenure-label">SENIORITY // </span>
+            <span><span class="tenure-num" id="ten-y">--</span><span class="tenure-unit">J</span></span>
+            <span><span class="tenure-num" id="ten-m">--</span><span class="tenure-unit">M</span></span>
+            <span><span class="tenure-num" id="ten-d">--</span><span class="tenure-unit">T</span></span>
+        </div>
         <button class="ctrl-btn" id="mode-switch">Mode: NIGHT_PROTOCOL</button>
     </div>
 
     <main>
         <div class="content-limiter">
+            <!-- Kategorien beginnen nun wieder bei 01 -->
             <section class="category-group">
                 <h2 id="cat-1">01 // COMMUNICATION</h2>
                 <div class="tiles-grid">
@@ -668,6 +712,30 @@
             }
         }
 
+        // --- Tenure / Seniority Calculation ---
+        function updateTenure() {
+            const startDate = new Date(2019, 2, 1); // 01.03.2019
+            const now = new Date();
+            
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+
+            if (months < 0 || (months === 0 && days < 0)) {
+                years--;
+                months += 12;
+            }
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+
+            document.getElementById('ten-y').textContent = years;
+            document.getElementById('ten-m').textContent = months;
+            document.getElementById('ten-d').textContent = days;
+        }
+
         // --- Wetter Logik ---
         function getWeatherIcon(code) {
             if (code === 0) return '☀️';
@@ -784,11 +852,14 @@
             applyTheme(currentThemeIdx);
             updateClock();
             updateProgress();
+            updateTenure();
             updateWeather();
             init3D();
             setInterval(updateClock, 1000);
             setInterval(updateMonitor, 4500);
             setInterval(updateWeather, 1800000);
+            setInterval(updateTenure, 86400000);
+
             document.getElementById('mode-switch').onclick = () => {
                 currentThemeIdx = (currentThemeIdx + 1) % themes.length;
                 applyTheme(currentThemeIdx);
