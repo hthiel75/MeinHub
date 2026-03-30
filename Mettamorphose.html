@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mett-amorphose | Die bewusste Entscheidung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        :root {
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        h1, h2, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=1600');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .loader {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900 selection:bg-emerald-100 selection:text-emerald-900">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-xl border-b border-stone-200">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-extrabold tracking-tighter flex items-center gap-2">
+                <span class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white text-xs">M</span>
+                <span class="text-emerald-800">METT<span class="text-stone-400 font-light italic">AMORPHOSE</span></span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-stone-500">
+                <a href="#vision" class="hover:text-emerald-600 transition-colors">Die Vision</a>
+                <a href="#transformation" class="hover:text-emerald-600 transition-colors">Der Swap</a>
+                <a href="#join" class="text-emerald-700 border-b-2 border-emerald-700 pb-1">Jetzt Umsteigen</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative h-[90vh] flex items-center justify-center text-white hero-bg">
+        <div class="relative z-10 text-center px-6 max-w-3xl fade-in">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                Tradition neu <br><span class="text-emerald-400 italic font-light">definiert.</span>
+            </h1>
+            <p class="text-lg md:text-xl font-light mb-10 text-stone-300 leading-relaxed">
+                Kein Mett. Keine Zwiebeln. Nur noch Fokus. Ich hab den Mett-Stecker gezogen, weil ich endlich aufgewacht bin. Wer wissen will, was hinter meiner Entscheidung gegen das Gehackte steckt, findet hier die ganze Story. Spoiler: Es wird euch nicht gefallen.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#vision" class="bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition shadow-xl shadow-emerald-900/20">
+                    Mein Weg
+                </a>
+                <a href="#transformation" class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition">
+                    Die Alternative
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section id="vision" class="py-24 px-6 scroll-mt-20">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-5 gap-12 items-start">
+                <div class="md:col-span-2">
+                    <h2 class="text-4xl font-bold mb-6 leading-tight text-stone-800">Der Moment der Klarheit</h2>
+                    <p class="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-4">Wandel ist möglich</p>
+                </div>
+                <div class="md:col-span-3 text-stone-600 space-y-6 text-lg leading-relaxed">
+                    <p>
+                        Es war ein gewöhnlicher Mettwochmorgen, als mir klar wurde: Meine Ernährung spiegelt nicht mehr meine Werte wider. Der "Mettwoch" war eine Institution in meinem Leben, aber die Qualität und die Herkunft ließen mich zweifeln.
+                    </p>
+                    <p>
+                        Seit meiner Umstellung auf rein pflanzliches Hack fühle ich mich nicht nur physisch leichter, sondern auch mental klarer. Es geht nicht um Verzicht, sondern um die Entdeckung neuer, ethischer Genüsse.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transformation Feature -->
+    <section id="transformation" class="py-24 bg-stone-100 scroll-mt-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-4xl font-bold mb-4">Vom Mettigel zum Food-Design</h2>
+                <p class="text-stone-500">Ein Vergleich, der keine Fragen offen lässt.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-10 rounded-3xl border border-stone-200">
+                    <div class="text-red-500 mb-6 font-bold text-sm tracking-widest uppercase">Vergangenheit</div>
+                    <h3 class="text-2xl font-bold mb-4">Klassisches Schweinemett</h3>
+                    <ul class="space-y-4 text-stone-500">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-300"></i> Hohe Cholesterinwerte</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-300"></i> Industrielle Massentierhaltung</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-300"></i> Belastung für das Herz-Kreislauf-System</li>
+                    </ul>
+                </div>
+                <div class="bg-emerald-900 p-10 rounded-3xl text-white shadow-2xl shadow-emerald-900/40">
+                    <div class="text-emerald-400 mb-6 font-bold text-sm tracking-widest uppercase">Zukunft</div>
+                    <h3 class="text-2xl font-bold mb-4">Veganes Vital-Hack</h3>
+                    <ul class="space-y-4 text-emerald-100/70">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-emerald-400"></i> Rein pflanzliche Proteine</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-emerald-400"></i> CO2-neutral in der Erzeugung</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-emerald-400"></i> Identisches Mundgefühl, besserer Fokus</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Trap -->
+    <section id="join" class="py-24 px-6 bg-white scroll-mt-20">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-block p-3 bg-emerald-50 rounded-2xl mb-6">
+                <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
+            </div>
+            <h2 class="text-4xl font-bold mb-6">Bist du bereit für den Wechsel?</h2>
+            <p class="text-stone-500 text-lg mb-10">
+                Ich habe meinen persönlichen 4-Wochen-Leitfaden für den perfekten veganen Mettwoch digitalisiert. <br>Keine Anmeldung nötig – klicke einfach auf den Button, um den PDF-Download zu starten.
+            </p>
+            
+            <div id="cta-box" class="flex flex-col items-center gap-3 max-w-md mx-auto">
+                <button onclick="simulateProcess()" class="bg-stone-900 text-white px-12 py-5 rounded-2xl font-bold hover:bg-emerald-700 transition flex items-center justify-center gap-3 shadow-xl group">
+                    <i class="fa-solid fa-file-pdf text-xl group-hover:scale-110 transition"></i>
+                    <span>PDF Guide herunterladen (kostenlos)</span>
+                </button>
+                <p class="text-stone-400 text-xs mt-4 italic">Dateigröße: 4.2 MB • Letztes Update: Gestern</p>
+            </div>
+
+            <div id="status-box" class="hidden mt-8 text-stone-500 italic flex flex-col items-center justify-center gap-4 reveal-animation">
+                <div class="loader !border-emerald-600 !border-t-stone-200"></div>
+                <span id="status-text" class="font-medium">Initialisiere verschlüsselten Download...</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-stone-200 text-center text-stone-400 text-xs">
+        <p>&copy; 2026 Die Mett-amorphose Initiative. <br>Bewusst. Ehrlich. Nachhaltig.</p>
+    </footer>
+
+    <!-- Reveal Modal -->
+    <div id="reveal-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/90 hidden opacity-0 transition-opacity duration-500">
+        <div class="bg-white p-8 md:p-12 rounded-[3rem] max-w-lg text-center mx-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-emerald-500"></div>
+            
+            <!-- User Uploaded Image -->
+            <div class="mb-6 relative inline-block">
+                <img src="Mettamorphose.jpg" alt="Mettwoch-Master" class="rounded-2xl shadow-xl max-h-64 mx-auto border-4 border-white" onerror="this.src='https://via.placeholder.com/400x500?text=Mett-Master+Bild+fehlt'">
+                <div class="absolute -bottom-4 -right-4 bg-yellow-400 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg border-4 border-white">🤡</div>
+            </div>
+
+            <h2 class="text-3xl font-black mb-4 text-stone-900 uppercase">APRIL, APRIL!</h2>
+            <p class="text-lg text-stone-600 mb-8 leading-relaxed">
+                Ich werde den echten Mettwoch niemals aufgeben. <br>
+                <strong>Der Mettigel bleibt!</strong> <br>
+                Zwiebeln sind schon geschnitten. Wir sehen uns beim Frühstück! 🥩🧅
+            </p>
+            <button onclick="closeModal()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-emerald-700 transition w-full">
+                Du hast mich echt gekriegt!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function simulateProcess() {
+            document.getElementById('cta-box').classList.add('hidden');
+            const statusBox = document.getElementById('status-box');
+            statusBox.classList.remove('hidden');
+
+            const steps = [
+                "Verbinde mit Content-Delivery-Network...",
+                "Generiere persönliches Exemplar...",
+                "Optimiere Rezeptbilder für Mobilgeräte...",
+                "Viren-Check wird durchgeführt...",
+                "Download startet in Kürze..."
+            ];
+
+            let stepIndex = 0;
+            const interval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    document.getElementById('status-text').innerText = steps[stepIndex];
+                    stepIndex++;
+                } else {
+                    clearInterval(interval);
+                    showReveal();
+                }
+            }, 900);
+        }
+
+        function showReveal() {
+            const modal = document.getElementById('reveal-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+            }, 50);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('reveal-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('cta-box').classList.remove('hidden');
+                document.getElementById('status-box').classList.add('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        }
+    </script>
+</body>
+</html>
