@@ -69,6 +69,15 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Custom scrollbar for the modal */
+        #modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        #modal-content::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body class="text-stone-900 overflow-x-hidden">
@@ -83,7 +92,7 @@
             <div class="hidden md:flex space-x-10 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">
                 <a href="#vision" class="hover:text-emerald-600 transition-colors">Vision</a>
                 <a href="#transformation" class="hover:text-emerald-600 transition-colors">Wandel</a>
-                <a href="#join" class="text-emerald-600 border-b-2 border-emerald-600 pb-1">Starten</a>
+                <a href="#join" class="text-emerald-700 border-b-2 border-emerald-700 pb-1">Starten</a>
             </div>
         </div>
     </nav>
@@ -97,7 +106,7 @@
             <h1 class="text-6xl md:text-9xl font-bold mb-8 leading-[0.9] tracking-tighter">
                 Das Ende <br><span class="font-serif italic font-light text-emerald-400">der Routine.</span>
             </h1>
-            <p class="text-lg md:text-2xl font-light mb-12 text-stone-300 leading-relaxed max-w-3xl mx-auto">
+            <p class="text-lg md:text-xl font-light mb-10 text-stone-300 leading-relaxed max-w-3xl mx-auto">
                 Kein Mett. Keine Zwiebeln. Nur noch Fokus. Ich hab den Mett-Stecker gezogen, weil ich endlich aufgewacht bin. Wer wissen will, was hinter meiner Entscheidung gegen das Gehackte steckt, findet hier die ganze Story. <span class="font-bold text-white">Spoiler: Es wird euch nicht gefallen.</span>
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-6">
@@ -116,7 +125,7 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col lg:flex-row gap-20 items-center">
                 <div class="lg:w-1/2">
-                    <h2 class="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tighter">
+                    <h2 class="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tighter text-stone-800">
                         Ein Morgen, <br>der alles <span class="font-serif italic text-emerald-600">veränderte.</span>
                     </h2>
                     <p class="text-xl text-stone-500 leading-relaxed mb-8">
@@ -130,7 +139,7 @@
                 </div>
                 <div class="lg:w-1/2 grid grid-cols-2 gap-4">
                     <div class="bg-stone-100 h-64 rounded-[2rem] overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover" alt="Health">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover" alt="Gesundes Essen">
                     </div>
                     <div class="bg-emerald-600 h-64 rounded-[2rem] flex items-end p-8 text-white">
                         <span class="text-4xl font-bold">100%</span>
@@ -164,7 +173,7 @@
                 </div>
                 <!-- Card 2 -->
                 <div class="bg-stone-900 p-12 rounded-[3rem] bento-card text-white animate-on-scroll">
-                    <h3 class="text-2xl font-bold mb-6">Ethik-Check</h3>
+                    <h3 class="text-2xl font-bold mb-6 text-stone-200">Ethik-Check</h3>
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-xs">✓</div>
@@ -190,7 +199,7 @@
                 <div class="md:col-span-2 bg-emerald-950 p-12 rounded-[3rem] bento-card text-white flex items-center justify-between animate-on-scroll">
                     <div>
                         <h3 class="text-3xl font-bold mb-4">Old-School Mett?</h3>
-                        <p class="text-emerald-200/60">Gehört ins letzte Jahrzehnt. Wir sind weiter.</p>
+                        <p class="text-emerald-200/60 text-sm md:text-base">Gehört ins letzte Jahrzehnt. Wir sind weiter.</p>
                     </div>
                     <div class="text-6xl opacity-20">🥩</div>
                 </div>
@@ -207,7 +216,7 @@
             </p>
             
             <div id="cta-container" class="relative inline-block group">
-                <button onclick="startDownload()" class="bg-stone-900 text-white px-16 py-7 rounded-[2rem] font-bold text-sm uppercase tracking-[0.2em] hover:bg-emerald-700 transition-all duration-500 shadow-2xl hover:shadow-emerald-200 group-hover:scale-105">
+                <button onclick="startDownload()" class="bg-stone-900 text-white px-10 md:px-16 py-6 md:py-7 rounded-[2rem] font-bold text-xs md:text-sm uppercase tracking-[0.2em] hover:bg-emerald-700 transition-all duration-500 shadow-2xl hover:shadow-emerald-200 group-hover:scale-105">
                     Guide jetzt kostenlos laden
                 </button>
                 <p class="mt-6 text-stone-400 text-[10px] uppercase tracking-widest">Keine Anmeldung erforderlich • PDF-Format</p>
@@ -215,7 +224,7 @@
 
             <div id="status-container" class="hidden flex-col items-center mt-12 space-y-6">
                 <span class="loader"></span>
-                <p id="status-text" class="text-emerald-700 font-bold uppercase tracking-widest text-xs">Bereite Download-Stream vor...</p>
+                <p id="status-text" class="text-emerald-700 font-bold uppercase tracking-widest text-[10px] md:text-xs">Bereite Download-Stream vor...</p>
             </div>
         </div>
     </section>
@@ -228,32 +237,37 @@
     </footer>
 
     <!-- Reveal Modal -->
-    <div id="reveal-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/95 hidden opacity-0 transition-opacity duration-700">
-        <div class="bg-white p-8 md:p-16 rounded-[4rem] max-w-2xl text-center mx-6 shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-3 bg-emerald-600"></div>
+    <div id="reveal-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/95 hidden opacity-0 transition-opacity duration-700 p-4">
+        <div id="modal-content" class="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto text-center shadow-2xl relative">
+            <div class="sticky top-0 left-0 w-full h-3 bg-emerald-600 z-20"></div>
             
-            <div class="mb-10 relative inline-block animate-bounce">
-                <img src="Mettamorphose.jpg" alt="Der Mett-Master" class="rounded-[2.5rem] shadow-2xl max-h-80 mx-auto border-8 border-white" onerror="this.src='https://via.placeholder.com/400x500?text=Mett+Master'">
-                <div class="absolute -bottom-6 -right-6 bg-emerald-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-2xl border-4 border-white">
-                    🤡
+            <div class="p-6 md:p-12">
+                <!-- Optimized Image Container -->
+                <div class="mb-6 relative inline-block w-full">
+                    <img src="Mettamorphose.jpg" alt="Der Mett-Master" 
+                         class="rounded-[2rem] shadow-2xl w-full max-w-sm md:max-w-md h-auto mx-auto border-8 border-white block" 
+                         onerror="this.src='https://via.placeholder.com/600x800?text=Mett-Master+Bild+fehlt'">
+                    <div class="absolute -bottom-4 -right-2 md:-right-4 bg-emerald-600 text-white w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center text-2xl md:text-3xl shadow-2xl border-4 border-white animate-bounce">
+                        🤡
+                    </div>
                 </div>
-            </div>
 
-            <h2 class="text-5xl md:text-6xl font-black mb-6 text-stone-900 tracking-tighter uppercase">APRIL, APRIL!</h2>
-            <p class="text-xl text-stone-500 mb-10 leading-relaxed font-medium">
-                Glaubst du im Ernst, ich würde den echten <span class="text-emerald-600">Mettwoch</span> jemals gegen Soja-Waffeln tauschen? <br><br>
-                <span class="text-stone-900 text-2xl font-bold italic font-serif">Der Mettigel lebt!</span> <br>
-                Zwiebeln sind geschnitten, Pfeffer ist drauf. Wir sehen uns beim Frühstück!
-            </p>
-            
-            <button onclick="closeModal()" class="bg-stone-900 text-white px-12 py-5 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-emerald-700 transition shadow-xl w-full">
-                Okay, du hattest mich!
-            </button>
+                <h2 class="text-4xl md:text-6xl font-black mb-4 text-stone-900 tracking-tighter uppercase leading-none">APRIL, APRIL!</h2>
+                <p class="text-lg text-stone-500 mb-8 leading-relaxed font-medium">
+                    Glaubst du im Ernst, ich würde den echten <span class="text-emerald-600">Mettwoch</span> jemals gegen Soja-Waffeln tauschen? <br><br>
+                    <span class="text-stone-900 text-2xl font-bold italic font-serif">Der Mettigel lebt!</span> <br>
+                    Zwiebeln sind geschnitten, Pfeffer ist drauf. Wir sehen uns beim Frühstück!
+                </p>
+                
+                <button onclick="closeModal()" class="bg-stone-900 text-white px-12 py-5 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-emerald-700 transition shadow-xl w-full">
+                    Okay, du hattest mich!
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Simple Intersection Observer for scroll animations
+        // Intersection Observer for scroll animations
         const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -266,7 +280,7 @@
         document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
         function startDownload() {
-            document.getElementById('cta-container').style.display = 'none';
+            document.getElementById('cta-container').classList.add('hidden');
             const statusContainer = document.getElementById('status-container');
             statusContainer.classList.remove('hidden');
             statusContainer.classList.add('flex');
@@ -304,7 +318,7 @@
             modal.classList.add('opacity-0');
             setTimeout(() => {
                 modal.classList.add('hidden');
-                document.getElementById('cta-container').style.display = 'inline-block';
+                document.getElementById('cta-container').classList.remove('hidden');
                 document.getElementById('status-container').classList.add('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 500);
